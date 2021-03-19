@@ -13,6 +13,9 @@ Vue.use(Vuetify);
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
+
+Vue.component('alumnos-tag', require('./components/alumnos/alumnos.vue').default);
+Vue.component('master-tag', require('./components/master.vue').default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
