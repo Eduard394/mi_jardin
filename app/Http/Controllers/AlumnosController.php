@@ -11,7 +11,7 @@ class AlumnosController extends Controller
 
     public function __construct(Alumnos $alumno)
     {
-        $this->alumno      = $alumno;
+        $this->alumno      = new Alumnos();
         //$this->middleware('auth');
     }
 
@@ -19,7 +19,21 @@ class AlumnosController extends Controller
     	return view('Alumnos.index');
     }
 
-    public function crear(){
-    	return $this->alumno->crear();
+    public function lista(){
+        return view('Alumnos.lista');
+    }
+
+    public function crear(Request $request) {
+    
+        $data     = $request->all();
+
+    	return $this->alumno->crear( $data );
+        
+    }
+
+    public function getAlumnos() {
+
+        return Alumnos::all();
+        
     }
 }

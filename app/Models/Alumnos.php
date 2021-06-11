@@ -11,28 +11,40 @@ class Alumnos extends Model
 
     protected $fillable = [
         'nombre',
-        'documento',
+        'codigo',
+        'periodo_entrada',
+        'periodo_salida',
+        'matricula',
+        'materiales',
+        'jornada',
+        'fecha_ingreso',
+        'fecha_retiro',
+        'pension',
+        'seguro',
+        'grado',
         'acudiente',
-        'telefono',
-        'telefono1',
-        'estado',
+        'telefono'
     ];
 
-    public function saludo(){
-    	return 'la vida es bella';
-    }
+    public function crear( $data ){
 
-    public function index(){
-    	return 'la vida es bella';
-    }
-    public function crear($data){
-    	$alumno 			= new Alumnos();
-    	$alumno->nombre 	= $data['nombre'];
-    	$alumno->documento 	= $data['documento'];
-    	$alumno->acudiente 	= $data['acudiente'];
-    	$alumno->telefono 	= $data['telefono'];
-    	$alumno->telefono1 	= $data['telefono1'];
-    	$alumno->estado 	= 1;
+    	$alumno 			        = new Alumnos();
+    	$alumno->nombre 	        = $data['nombre'];
+    	$alumno->documento 	        = $data['codigo'];
+    	$alumno->periodo_entrada    = $data['periodo_entrada'];
+    	$alumno->periodo_salida 	= $data['periodo_salida'];
+    	$alumno->matricula 	        = $data['matricula'];
+    	$alumno->materiales 	    = $data['materiales'];
+    	$alumno->jornada 	        = $data['jornada'];
+    	$alumno->fecha_ingreso 	    = $data['fecha_ingreso'];
+        
+        $alumno->fecha_retiro 	    = $data['fecha_retiro'];
+    	$alumno->pension 	        = $data['pension'];
+    	$alumno->seguro 	        = $data['seguro'];
+    	$alumno->grado 	            = $data['grado'];
+    	$alumno->acudiente 	        = $data['acudiente'];
+        $alumno->telefono 	        = $data['telefono'];
+    	$alumno->estado 	        = 1;
 
     	$alumno->save();        
         return $alumno->id;
