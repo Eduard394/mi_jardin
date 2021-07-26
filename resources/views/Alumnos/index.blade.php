@@ -3,11 +3,17 @@
 @extends('adminlte::page')
 <br>
 <head>
+    <link rel="stylesheet" href="/css/chosen.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 </head>
 <body>
+    <style>
+        .col-4{
+            margin-bottom: 1%;
+        }
+    </style>
     <div class="col-12" id="alumnos">
         <div class="flex">
             <div class="box col-12">
@@ -24,24 +30,12 @@
                                         <input type="text" v-model="nombre" id="nombre" class="form-control" name="nombre"  placeholder="Nombre" >
                                     </div>
                                     <div class="col-4">
-                                        <label for="codigo">Código:</label>
-                                        <input type="text" v-model="codigo" id="codigo" class="form-control" name="codigo" placeholder="Código">
-                                    </div>
-                                    <div class="col-4">
-                                        <label for="periodo_entrada">Periodo de entrada:</label>
-                                        <input type="number" v-model="periodo_entrada" id="periodo_entrada" class="form-control" name="periodo_entrada"  placeholder="Periodo de entrada" >
-                                    </div>
-                                    <div class="col-4">
-                                        <label for="periodo_salida">Periodo de salida:</label>
-                                        <input type="number" v-model="periodo_salida" id="periodo_salida" class="form-control" name="periodo_salida" placeholder="Periodo de salida">
-                                    </div>
-                                    <div class="col-4">
                                         <label for="matricula">Matrícula:</label>
-                                        <input type="number" v-model="matricula" id="matricula" class="form-control" name="matricula"  placeholder="Matrícula" >
+                                        <input type="number" v-model="matricula" id="matricula" class="form-control" name="matricula"  placeholder="Matrícula" value="{{$items[0]->matricula}}">
                                     </div>
                                     <div class="col-4">
                                         <label for="materiales">Materiales:</label>
-                                        <input type="number" v-model="materiales" id="materiales" class="form-control" name="materiales" placeholder="Materiales">
+                                        <input type="number" v-model="materiales" id="materiales" class="form-control" name="materiales" placeholder="Materiales" value="{{$items[0]->materiales}}">
                                     </div>    
                                     <div class="col-4">
                                         <label for="jornada">Jornada:</label>
@@ -58,15 +52,15 @@
                                     </div>
                                     <div class="col-4">
                                         <label for="fecha_retiro">Fecha de retiro:</label>
-                                        <input type="date" v-model="fecha_retiro" id="fecha_retiro" class="form-control" name="fecha_retiro" placeholder="Fecha de retiro">
+                                        <input type="date" v-model="fecha_retiro" id="fecha_retiro" class="form-control" name="fecha_retiro" placeholder="Fecha de retiro" value="{{$items[0]->culminacion}}">
                                     </div>      
                                     <div class="col-4">
                                         <label for="pension">Pensión:</label>
-                                        <input type="number" v-model="pension" id="pension" class="form-control" name="pension" placeholder="Pensión">
+                                        <input type="number" v-model="pension" id="pension" class="form-control" name="pension" placeholder="Pensión" value="{{$items[0]->pension}}">
                                     </div>   
                                     <div class="col-4">
                                         <label for="seguro">Seguro:</label>
-                                        <input type="number" v-model="seguro" id="seguro" class="form-control" name="seguro" placeholder="Seguro">
+                                        <input type="number" v-model="seguro" id="seguro" class="form-control" name="seguro" placeholder="Seguro" value="{{$items[0]->seguro}}">
                                     </div>   
                                     <div class="col-4">
                                         <label for="grado">Grado:</label>
@@ -78,6 +72,31 @@
                                             <option value="jardin">Jardín</option>
                                             <option value="transicion">Transición</option>
                                         </select>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="lonchera">Lonchera</label><br>
+                                        <input type="checkbox" id="lonchera" name="lonchera">
+                                    </div>
+                                    <div id="div_valor_lonchera" class="col-4" style="display: none;">
+                                        <label for="valor_lonchera">Valor lonchera</label>
+                                        <input type="number" v-model="valor_lonchera" id="valor_lonchera" class="form-control" name="valor_lonchera"  placeholder="Valor de la lonchera" value="{{$items[0]->lonchera}}">
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="hermano">Hermano</label><br>
+                                        <input type="checkbox" id="hermano" name="hermano">
+                                    </div>
+                                    <div id="div_hermano" class="col-4">
+                                        <label for="hermano_de">Hermano de:</label>
+                                        <select name="hermano_de" id="hermano_de" class="custom-select chosen-select form-control">
+                                            <option value="NULL" > Seleccione el hermano</option>
+                                            @foreach($alumnos as $alum)
+                                                <option  value="{{ $alum->id }}" >{{ $alum->nombre }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="descuento">Aplicar descuentos</label><br>
+                                        <input type="checkbox" id="descuento" name="descuento" checked>
                                     </div>
                                     <div class="col-4">
                                         <label for="acudiente">Nombre acudiente:</label>
@@ -102,6 +121,185 @@
     </div>
 </body>
 <script src="{{ asset('js/app.js') }}"></script>
-<script src="{{ asset('js/alumno.js') }}"></script>
+<script src="/js/chosen.jquery.js"></script>
+<script>
+
+    $(".chosen-select").chosen();
+
+    var formvalid 	= true;
+    var today       = new Date();
+    var year        = today.getFullYear();
+    var day         = today.getDate();
+    var month       = today.getMonth();
+
+    $(document).ready(function(){
+
+        setTimeout(function(){
+            $( '#div_hermano' ).css( 'display', 'none' );
+        }, 1000);
+
+        month = getMes( month );
+
+        let hoy = year + '-' + 0 + parseInt( month ) + '-' + day;
+
+        $( '#fecha_ingreso' ).val(hoy);
+
+    });
+
+    function saveData() {
+
+        formvalid = true;
+        formvalid = validarDatos();
+        
+        if( formvalid )
+            enviarDatos();
+        else 
+            validarDatos();
+        
+    } 
+
+    function enviarDatos( datos ) {
+
+        event.preventDefault();
+
+        const myObject = new Vue({
+
+            created () {
+                this.save()
+            },
+
+            methods : {
+                async save(){
+
+                    let data = {
+
+                        nombre: $( '#nombre' ).val(),
+                        matricula: $( '#matricula' ).val(),
+                        materiales: $( '#materiales' ).val(),
+                        jornada: $( '#jornada' ).val(),
+                        fecha_ingreso: $( '#fecha_ingreso' ).val(),
+                        fecha_retiro: $( '#fecha_retiro' ).val(),
+                        pension: $( '#pension' ).val(),
+                        seguro: $( '#seguro' ).val(),
+                        grado: $( '#grado' ).val(),
+                        lonchera: $( '#lonchera' ).is( ':checked' ),
+                        lonchera_valor: $( '#valor_lonchera' ).val(),
+                        hermano: $( '#hermano' ).is( ':checked' ),
+                        hermano_id: $( '#hermano_de' ).val(),
+                        descuento: $( '#descuento' ).is( ':checked' ),
+                        acudiente: $( '#acudiente' ).val(),
+                        telefono: $( '#telefono' ).val()
+
+                    };
+                    
+                    const resp = await  axios.post( '/alumno/crear', data );
+                    
+                    if( resp.status == 200 ){
+                        
+                        toastr.success( 'Alumno creado exitosamente' );
+                        location.reload();
+
+                    } else
+                        toastr.error( 'Error en la busqueda' );
+                    
+                }
+            }
+        
+        })
+    }
+
+    function validarDatos() {
+
+        if ( $( '#nombre' ).val().length <= 0 ) {
+            formvalid = false;
+            toastr.error( 'El campo nombre es obligatorio' );
+        }
+
+        if ( $( '#matricula' ).val() <= 0 || $( '#matricula' ).val() == '' ) {
+            formvalid = false;
+            toastr.error( 'El campo matricula es obligatorio' );
+        }
+
+        if ( $( '#jornada' ).val().length == "NULL" ) {
+            formvalid = false;
+            toastr.error( 'El campo jornada es obligatorio' );
+        }
+
+        if ( $( '#fecha_ingreso' ).val().length <= 0 ) { 
+            formvalid = false;
+            toastr.error( 'El campo fecha de ingreso es obligatorio' );
+        }
+
+        if ( $( '#fecha_retiro' ).val().length <= 0 ) { 
+            formvalid = false;
+            toastr.error( 'El campo fecha de retiro es obligatorio' );
+        }
+
+        if ( $( '#pension' ).val() <= 0 || $( '#pension' ).val() == ''  ) {
+            formvalid = false;
+            toastr.error( 'El campo pensión es obligatorio' );
+        }
+
+        if ( $( '#seguro' ).val() <= 0 || $( '#seguro' ).val() <= '' ) {
+            formvalid = false;
+            toastr.error( 'El campo seguro es obligatorio' );
+        }
+
+        if ( $( '#grado' ).val().length == "NULL" ) {
+            formvalid = false;
+            toastr.error( 'El campo grado es obligatorio' );
+        }
+
+        if ( $( '#acudiente' ).val().length <= 0 ) {
+            formvalid = false;
+            toastr.error( 'El campo nombre acudiente es obligatorio' );
+        }
+
+        if ( $( '#telefono' ).val().length < 7 ) {
+            formvalid = false;
+            toastr.error( 'El campo teléfono es inválido' );
+        }
+
+        if ( $( '#lonchera' ).is( ':checked' ) && $( '#valor_lonchera' ).val() < 0 ) {
+            formvalid = false;
+            toastr.error( 'El campo valor de la lonchera es obligatorio' );
+        }
+
+        if ( $( '#hermano' ).is( ':checked' ) && $( '#hermano_de' ).val().length == "NULL" ) {
+            formvalid = false;
+            toastr.error( 'El campo hermano de es obligatorio' );
+        }
+
+        return formvalid;
+    }
+
+    $( document ).on( 'change', '#lonchera', function() {
+
+        if ( $( '#lonchera' ).is( ':checked' ) )
+            $( '#div_valor_lonchera' ).show();
+        else 
+            $( '#div_valor_lonchera' ).hide()
+
+    });
+
+    $( document ).on( 'change', '#hermano', function() {
+
+        if ( $( '#hermano' ).is( ':checked' ) ){
+            $( '#div_hermano' ).show();
+            $( '#hermano_de' ).trigger( 'chosen:updated' );
+        }
+        else 
+            $( '#div_hermano' ).hide()
+
+    });
+
+    function getMes( mes ) {
+
+        if ( mes < 9 ) 
+            return 0 + ( parseInt( mes ) + 1 );
+        else 
+            return ( parseInt( mes ) + 1 );
+
+    }
 </script>
 @endsection

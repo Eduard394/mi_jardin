@@ -43,13 +43,13 @@
                 </thead>
                 <tbody>
                     <tr v-for="alumno in paginatedUsers" :key="alumno.id">
+                        <td style="display: none" id="id">{{alumno.id}}</td>
                         <td >{{alumno.nombre}}</td>
-                        <td>{{alumno.documento}}</td>
-                        <td>{{alumno.jornada}}</td>
                         <td>{{alumno.grado}}</td>
                         <td>{{alumno.acudiente}}</td>
                         <td>{{alumno.telefono}}</td>
-                        <td><a class="btn btn-success btn-sm text-white" :href="'/alumnos/'">Ver</a></td>
+                        <td>{{alumno.deuda}}</td>
+                        <td><a class="btn btn-success btn-sm text-white" onclick="editar()">Ver</a></td>
                         
                     </tr>
                 </tbody>
@@ -97,124 +97,129 @@
 
 <script>
 
-export default {
-    created() {
-        this.getData();
-
-        Fire.$on('reloadUsers', () => {
+    export default {
+        created() {
             this.getData();
-        })
-    },
 
-    data() {
-        let sortOrders = {};
-        let columns = [
-            {label: 'Nombre', name: 'nombre' },
-            {label: 'Código', name: 'documento'},
-            {label: 'Jornada', name: 'jornada'},
-            {label: 'Grado', name: 'grado' },
-            {label: 'Acudiente', name: 'acudiente'},
-            {label: 'Teléfono', name: 'telefono'},
-        ];
-        columns.forEach((column) => {
-           sortOrders[column.name] = -1;
-        });
-        
-        return {
-            users: [],
-            columns: columns,
-            sortKey: 'nombre',
-            sortOrders: sortOrders,
-            length: 10,
-            search: '',
-            tableShow: {
-                showdata: true,
-            },
-            pagination: {
-                currentPage: 1,
-                total: '',
-                nextPage: '',
-                prevPage: '',
-                from: '',
-                to: ''
-            },
-            progreso : true
-        }
-    },
+            Fire.$on('reloadUsers', () => {
+                this.getData();
+            })
+        },
 
-    methods: {
-        getData() {
-            console.log('antes de la peticion')
-            axios.get('/alumno/getAlumnos', {params: this.tableShow})
-                .then(response => {
-                    console.log('después de la peticion')
-                    this.users = response.data;
-                    this.pagination.total = this.users.length;
-                    this.progreso = false
-                    if(response.data.length == 0){
-                        this.$swal('',`Tabla sin datos`,'success')
-                    }
-                })
-                .catch(errors => {
-                    this.progreso = false
-                    console.log(errors);
-                });
-        },
-        paginate(array, length, pageNumber) {
-            this.pagination.from = array.length ? ((pageNumber - 1) * length) + 1 : ' ';
-            this.pagination.to = pageNumber * length > array.length ? array.length : pageNumber * length;
-            this.pagination.prevPage = pageNumber > 1 ? pageNumber : '';
-            this.pagination.nextPage = array.length > this.pagination.to ? pageNumber + 1 : '';
-            return array.slice((pageNumber - 1) * length, pageNumber * length);
-        },
-        resetPagination() {
-            this.pagination.currentPage = 1;
-            this.pagination.prevPage = '';
-            this.pagination.nextPage = '';
-        },
-        sortBy(key) {
-            this.resetPagination();
-            this.sortKey = key;
-            this.sortOrders[key] = this.sortOrders[key] * -1;
-        },
-        getIndex(array, key, value) {
-            return array.findIndex(i => i[key] == value)
-        },
-    },
-    computed: {
+        data() {
+            let sortOrders = {};
+            let columns = [
+                {label: 'Nombre', name: 'nombre' },
+                {label: 'Grado', name: 'grado' },
+                {label: 'Acudiente', name: 'acudiente'},
+                {label: 'Teléfono', name: 'telefono'},
+                {label: 'Deuda', name: 'deuda'},
 
-        filteredUsers() {
-            let users = this.users;
-            if (this.search) {
-                users = users.filter((row) => {
-                    return Object.keys(row).some((key) => {
-                        return String(row[key]).toLowerCase().indexOf(this.search.toLowerCase()) > -1;
+            ];
+            columns.forEach((column) => {
+            sortOrders[column.name] = -1;
+            });
+            
+            return {
+                users: [],
+                columns: columns,
+                sortKey: 'nombre',
+                sortOrders: sortOrders,
+                length: 10,
+                search: '',
+                tableShow: {
+                    showdata: true,
+                },
+                pagination: {
+                    currentPage: 1,
+                    total: '',
+                    nextPage: '',
+                    prevPage: '',
+                    from: '',
+                    to: ''
+                },
+                progreso : true
+            }
+        },
+
+        methods: {
+            getData() {
+                
+                axios.get('/alumno/getAlumnos', {params: this.tableShow})
+                    .then(response => {
+                    
+                        this.users = response.data;
+                        this.pagination.total = this.users.length;
+                        this.progreso = false
+                        if(response.data.length == 0){
+                            this.$swal('',`Tabla sin datos`,'success')
+                        }
                     })
-                });
-            }
-            let sortKey = this.sortKey;
-            let order = this.sortOrders[sortKey] || 1;
-            if (sortKey) {
-                users = users.slice().sort((a, b) => {
-                    let index = this.getIndex(this.columns, 'name', sortKey);
-                    a = String(a[sortKey]).toLowerCase();
-                    b = String(b[sortKey]).toLowerCase();
-                    if (this.columns[index].type && this.columns[index].type === 'date') {
-                        return (a === b ? 0 : new Date(a).getTime() > new Date(b).getTime() ? 1 : -1) * order;
-                    } else if (this.columns[index].type && this.columns[index].type === 'number') {
-                        return (+a === +b ? 0 : +a > +b ? 1 : -1) * order;
-                    } else {
-                        return (a === b ? 0 : a > b ? 1 : -1) * order;
-                    }
-                });
-            }
-            return users;
+                    .catch(errors => {
+                        this.progreso = false
+                        console.log(errors);
+                    });
+            },
+            paginate(array, length, pageNumber) {
+                this.pagination.from = array.length ? ((pageNumber - 1) * length) + 1 : ' ';
+                this.pagination.to = pageNumber * length > array.length ? array.length : pageNumber * length;
+                this.pagination.prevPage = pageNumber > 1 ? pageNumber : '';
+                this.pagination.nextPage = array.length > this.pagination.to ? pageNumber + 1 : '';
+                return array.slice((pageNumber - 1) * length, pageNumber * length);
+            },
+            resetPagination() {
+                this.pagination.currentPage = 1;
+                this.pagination.prevPage = '';
+                this.pagination.nextPage = '';
+            },
+            sortBy(key) {
+                this.resetPagination();
+                this.sortKey = key;
+                this.sortOrders[key] = this.sortOrders[key] * -1;
+            },
+            getIndex(array, key, value) {
+                return array.findIndex(i => i[key] == value)
+            },
         },
-        paginatedUsers() {
-            return this.paginate(this.filteredUsers, this.length, this.pagination.currentPage);
+        computed: {
+
+            filteredUsers() {
+                let users = this.users;
+                if (this.search) {
+                    users = users.filter((row) => {
+                        return Object.keys(row).some((key) => {
+                            return String(row[key]).toLowerCase().indexOf(this.search.toLowerCase()) > -1;
+                        })
+                    });
+                }
+                let sortKey = this.sortKey;
+                let order = this.sortOrders[sortKey] || 1;
+                if (sortKey) {
+                    users = users.slice().sort((a, b) => {
+                        let index = this.getIndex(this.columns, 'name', sortKey);
+                        a = String(a[sortKey]).toLowerCase();
+                        b = String(b[sortKey]).toLowerCase();
+                        if (this.columns[index].type && this.columns[index].type === 'date') {
+                            return (a === b ? 0 : new Date(a).getTime() > new Date(b).getTime() ? 1 : -1) * order;
+                        } else if (this.columns[index].type && this.columns[index].type === 'number') {
+                            return (+a === +b ? 0 : +a > +b ? 1 : -1) * order;
+                        } else {
+                            return (a === b ? 0 : a > b ? 1 : -1) * order;
+                        }
+                    });
+                }
+                return users;
+            },
+            paginatedUsers() {
+                return this.paginate(this.filteredUsers, this.length, this.pagination.currentPage);
+            }
         }
+    };
+
+    function editar() {
+        console.log('ccasofehod')
     }
-};
+
 </script>
 
 

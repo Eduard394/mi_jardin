@@ -1,132 +1,128 @@
-var formvalid 	= true;
+// var formvalid 	= true;
 
-function clearForm() {
+// function saveData() {
+
+//     formvalid = true;
+//     formvalid = validarDatos();
     
-}
+//     if( formvalid ){
 
-function saveData() {
+//         enviarDatos();
 
-    formvalid = true;
-    formvalid = validarDatos();
-    
-    if( formvalid ){
+//     } else {
+//         validarDatos();
+//     }
+// } 
 
-        enviarDatos();
+// function enviarDatos( datos ) {
 
-    } else {
-        validarDatos();
-    }
-} 
+//     event.preventDefault();
 
-function enviarDatos( datos ) {
+//     const myObject = new Vue({
 
-    event.preventDefault();
+//         created () {
+//             this.save()
+//         },
 
-    const myObject = new Vue({
+//         methods : {
+//             async save(){
 
-        created () {
-            this.save()
-        },
+//                 let data = {
 
-        methods : {
-            async save(){
+//                     nombre: $( '#nombre' ).val(),
+//                     codigo: $( '#codigo' ).val(),
+//                     periodo_entrada: $( '#periodo_entrada' ).val(),
+//                     periodo_salida: $( '#periodo_salida' ).val(),
+//                     matricula: $( '#matricula' ).val(),
+//                     materiales: $( '#materiales' ).val(),
+//                     jornada: $( '#jornada' ).val(),
+//                     fecha_ingreso: $( '#fecha_ingreso' ).val(),
+//                     fecha_retiro: $( '#fecha_retiro' ).val(),
+//                     pension: $( '#pension' ).val(),
+//                     seguro: $( '#seguro' ).val(),
+//                     grado: $( '#grado' ).val(),
+//                     acudiente: $( '#acudiente' ).val(),
+//                     telefono: $( '#telefono' ).val()
 
-                let data = {
-
-                    nombre: $( '#nombre' ).val(),
-                    codigo: $( '#codigo' ).val(),
-                    periodo_entrada: $( '#periodo_entrada' ).val(),
-                    periodo_salida: $( '#periodo_salida' ).val(),
-                    matricula: $( '#matricula' ).val(),
-                    materiales: $( '#materiales' ).val(),
-                    jornada: $( '#jornada' ).val(),
-                    fecha_ingreso: $( '#fecha_ingreso' ).val(),
-                    fecha_retiro: $( '#fecha_retiro' ).val(),
-                    pension: $( '#pension' ).val(),
-                    seguro: $( '#seguro' ).val(),
-                    grado: $( '#grado' ).val(),
-                    acudiente: $( '#acudiente' ).val(),
-                    telefono: $( '#telefono' ).val()
-
-                };
+//                 };
                 
-                const resp = await  axios.post( '/alumno/crear', data );
+//                 const resp = await  axios.post( '/alumno/crear', data );
                 
-                if( resp.status == 200 ){
+//                 if( resp.status == 200 ){
                     
-                    toastr.success( 'Alumno creado exitosamente' );
-                    $( "#crearAlumno" )[0].reset();
+//                     toastr.success( 'Alumno creado exitosamente' );
+//                     $( "#crearAlumno" )[0].reset();
 
-                } else
-                    toastr.error( 'Error en la busqueda' );
+//                 } else
+//                     toastr.error( 'Error en la busqueda' );
                 
-            }
-        }
+//             }
+//         }
     
-    })
-}
+//     })
+// }
 
-function validarDatos() {
+// function validarDatos() {
 
-    if ( $( '#nombre' ).val().length <= 0 ) {
-        formvalid = false;
-        toastr.error( 'El campo nombre es obligatorio' );
-    }
+//     if ( $( '#nombre' ).val().length <= 0 ) {
+//         formvalid = false;
+//         toastr.error( 'El campo nombre es obligatorio' );
+//     }
 
-    if ( $( '#codigo' ).val().length <= 0 ) {
-        formvalid = false;
-        toastr.error( 'El campo código es obligatorio' );
-    }
+//     if ( $( '#codigo' ).val().length <= 0 ) {
+//         formvalid = false;
+//         toastr.error( 'El campo código es obligatorio' );
+//     }
 
-    if ( $( '#periodo_entrada' ).val().length <= 0 ) {
-        formvalid = false;
-        toastr.error( 'El campo periodo de entrada es obligatorio' );
-    }
+//     if ( $( '#periodo_entrada' ).val().length <= 0 ) {
+//         formvalid = false;
+//         toastr.error( 'El campo periodo de entrada es obligatorio' );
+//     }
 
-    if ( $( '#periodo_salida' ).val().length <= 0 ) {
-        formvalid = false;
-        toastr.error( 'El campo periodo de salida es obligatorio' );
-    }
+//     if ( $( '#periodo_salida' ).val().length <= 0 ) {
+//         formvalid = false;
+//         toastr.error( 'El campo periodo de salida es obligatorio' );
+//     }
 
-    if ( $( '#matricula' ).val().length <= 0 ) {
-        formvalid = false;
-        toastr.error( 'El campo matricula es obligatorio' );
-    }
+//     if ( $( '#matricula' ).val().length <= 0 ) {
+//         formvalid = false;
+//         toastr.error( 'El campo matricula es obligatorio' );
+//     }
 
-    if ( $( '#jornada' ).val().length == "NULL" ) {
-        formvalid = false;
-        toastr.error( 'El campo jornada es obligatorio' );
-    }
+//     if ( $( '#jornada' ).val().length == "NULL" ) {
+//         formvalid = false;
+//         toastr.error( 'El campo jornada es obligatorio' );
+//     }
 
-    if ( $( '#fecha_ingreso' ).val().length <= 0 ) { 
-        formvalid = false;
-        toastr.error( 'El campo fecha de ingreso es obligatorio' );
-    }
+//     if ( $( '#fecha_ingreso' ).val().length <= 0 ) { 
+//         formvalid = false;
+//         toastr.error( 'El campo fecha de ingreso es obligatorio' );
+//     }
 
-    if ( $( '#pension' ).val().length <= 0 ) {
-        formvalid = false;
-        toastr.error( 'El campo pensión es obligatorio' );
-    }
+//     if ( $( '#pension' ).val().length <= 0 ) {
+//         formvalid = false;
+//         toastr.error( 'El campo pensión es obligatorio' );
+//     }
 
-    if ( $( '#seguro' ).val().length <= 0 ) {
-        formvalid = false;
-        toastr.error( 'El campo seguro es obligatorio' );
-    }
+//     if ( $( '#seguro' ).val().length <= 0 ) {
+//         formvalid = false;
+//         toastr.error( 'El campo seguro es obligatorio' );
+//     }
 
-    if ( $( '#grado' ).val().length == "NULL" ) {
-        formvalid = false;
-        toastr.error( 'El campo grado es obligatorio' );
-    }
+//     if ( $( '#grado' ).val().length == "NULL" ) {
+//         formvalid = false;
+//         toastr.error( 'El campo grado es obligatorio' );
+//     }
 
-    if ( $( '#acudiente' ).val().length <= 0 ) {
-        formvalid = false;
-        toastr.error( 'El campo nombre acudiente es obligatorio' );
-    }
+//     if ( $( '#acudiente' ).val().length <= 0 ) {
+//         formvalid = false;
+//         toastr.error( 'El campo nombre acudiente es obligatorio' );
+//     }
 
-    if ( $( '#telefono' ).val().length <= 0 ) {
-        formvalid = false;
-        toastr.error( 'El campo teléfono es obligatorio' );
-    }
+//     if ( $( '#telefono' ).val().length <= 0 ) {
+//         formvalid = false;
+//         toastr.error( 'El campo teléfono es obligatorio' );
+//     }
 
-    return formvalid;
-}
+//     return formvalid;
+// }

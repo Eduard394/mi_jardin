@@ -7,7 +7,7 @@ return [
     'pages'                         => 'Pages',
     'account_settings'              => 'ACCOUNT SETTINGS',
     'profile'                       => 'Profile',
-    'change_password'               => 'Change Password',
+    'change_password'               => 'Valor lonchera',
     'multilevel'                    => 'Alumnos',
     'level_one'                     => 'Level 1',
     'level_two'                     => 'Level 2',
@@ -16,4 +16,6 @@ return [
     'important'                     => 'Important',
     'warning'                       => 'Warning',
     'information'                   => 'Information',
+    'alumno'                        => 'Creación de alumno',
+    'config'                        => 'Configuración de items'
 ];

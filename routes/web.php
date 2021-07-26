@@ -2,7 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AlumnosController;
+use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LoncheraController;
+use App\Http\Controllers\PagosController;
+use App\Http\Controllers\ReporteController;
+use App\Http\Controllers\ValorLoncheraController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -11,11 +15,27 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('alumno', [AlumnosController::class,'index']);
+
+Route::get( 'alumno', [ AlumnosController::class,'index']);
 Route::get( 'alumno/getAlumnos', [ AlumnosController::class, 'getAlumnos' ]);
 Route::post( 'alumno/crear', [ AlumnosController::class, 'crear' ] )->name( 'alumno.crear' );
 Route::get( 'alumno/lista', [ AlumnosController::class,'lista' ] )->name( 'alumno.lista' );
-Route::resource('alumno/get', AlumnosController::class);
+Route::resource( 'alumno/get', AlumnosController::class ); 
 
-Route::get('lonchera', [LoncheraController::class,'index']);
-Route::get('lonchera/selector', [LoncheraController::class,'getSelectores']);
+Route::get( 'lonchera', [ LoncheraController::class, 'index' ] );
+Route::get( 'lonchera/selector', [ LoncheraController::class, ' getSelectores' ] );
+Route::post( 'lonchera/getLonchera', [ LoncheraController::class, 'getLonchera' ] );
+Route::post( 'lonchera/createLonchera', [ LoncheraController::class, 'createLonchera' ] );
+
+Route::get( 'valor', [ ValorLoncheraController::class, 'index' ] );
+Route::post( 'valor/updateValor', [ ValorLoncheraController::class, 'updateValor' ] );
+
+Route::get( 'pagos', [ PagosController::class, 'index' ] );
+Route::post( 'pagos/validarMes', [ PagosController::class, 'validarMes' ] );
+Route::post( 'pagos/createPago', [ PagosController::class, 'createPago' ] );
+
+Route::get( 'reporte', [ ReporteController::class, 'index' ] );
+Route::get( 'reporte/getInfo', [ ReporteController::class, 'getInfo' ] );
+
+Route::get( 'item', [ ItemController::class, 'index' ] );
+Route::post( 'item/actualizar', [ ItemController::class, 'actualizar' ] );
