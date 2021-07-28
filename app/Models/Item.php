@@ -30,6 +30,7 @@ class Item extends Model
         $item->pension          = $data['pension'];
         $item->seguro           = $data['seguro'];
         $item->materiales       = $data['materiales'];
+        $item->inicio           = $data['inicio'];
         $item->culminacion      = $data['culminacion'];
         $item->desc_matricula   = $data['desc_matricula'];
         $item->desc_pension     = $data['desc_pension'];

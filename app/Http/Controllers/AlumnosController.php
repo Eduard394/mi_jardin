@@ -64,9 +64,12 @@ class AlumnosController extends Controller
     	$result = $this->alumno->crear( $data );
 
         if ( $result ) {
+
             if ( $data[ 'hermano' ] )
                 $edit = $this->alumno->editarHermano( $data[ 'hermano_id' ], $result );
-            return $this->mesCobrado->crear( $result, 8, 2021 );
+            
+            
+            return $this->mesCobrado->crear( $result, $data['mesInicio'], $data['anoInicio'] );
 
         }
         

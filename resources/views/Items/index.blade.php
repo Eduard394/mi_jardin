@@ -47,6 +47,10 @@
                                         <input type="number" v-model="materiales" id="materiales" class="form-control" name="materiales" value="{{$items[0]->materiales}}">
                                     </div>
                                     <div class="col-md-4">
+                                        <label for="inicio">Inicio de clases</label>
+                                        <input type="date" v-model="inicio" id="inicio" class="form-control" name="inicio" value="{{$items[0]->inicio}}">
+                                    </div>
+                                    <div class="col-md-4">
                                         <label for="culminacion">Culminacion de año</label>
                                         <input type="date" v-model="culminacion" id="culminacion" class="form-control" name="culminacion" value="{{$items[0]->culminacion}}">
                                     </div>
@@ -116,6 +120,7 @@
                         pension: $( '#pension' ).val(),
                         seguro: $( '#seguro' ).val(),
                         materiales: $( '#materiales' ).val(),
+                        inicio: $( '#inicio' ).val(),
                         culminacion: $( '#culminacion' ).val(),
                         desc_matricula: $( '#desc_matricula' ).val(),
                         desc_pension: $( '#desc_pension' ).val(),
@@ -163,6 +168,11 @@
         if ( $( '#materiales' ).val() <= 0 ) { 
             formvalid = false;
             toastr.error( 'El campo materiales debe ser mayor a cero' );
+        }
+
+        if ( $( '#inicio' ).val().length <= 0 ) {
+            formvalid = false;
+            toastr.error( 'El campo inicio de clases es obligatorio' );
         }
 
         if ( $( '#culminacion' ).val().length <= 0 ) {

@@ -17,8 +17,12 @@ class Pagos extends Migration
             $table->id();
             $table->foreignId( 'alumno_id' )->references('id')->on('alumnos')->onDelete('cascade'); 
             $table->foreignId( 'mes_id' )->references('id')->on('mes')->onDelete('cascade'); 
-            $table->foreignId( 'item_id' )->references('id')->on('items')->onDelete('cascade'); 
-            $table->integer( 'valor_pago' );
+            $table->date( 'fecha_pago' );
+            $table->integer( 'pago_matricula' );
+            $table->integer( 'pago_pension' );
+            $table->integer( 'pago_lonchera' );
+            $table->integer( 'pago_seguro' );
+            $table->integer( 'pago_materiales' );
             $table->timestamps();
         });
     }

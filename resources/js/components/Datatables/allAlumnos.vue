@@ -38,7 +38,7 @@
                             style="width: 40%; cursor:pointer;">
                             {{column.label}}
                         </th>
-                        <th>Ver</th>
+                        <!-- <th>Ver</th> -->
                     </tr>
                 </thead>
                 <tbody>
@@ -49,7 +49,7 @@
                         <td>{{alumno.acudiente}}</td>
                         <td>{{alumno.telefono}}</td>
                         <td>{{alumno.deuda}}</td>
-                        <td><a class="btn btn-success btn-sm text-white" onclick="editar()">Ver</a></td>
+                        <!-- <td><a class="btn btn-success btn-sm text-white" onclick="editar()" :value="+alumno.id">Ver</a></td> -->
                         
                     </tr>
                 </tbody>

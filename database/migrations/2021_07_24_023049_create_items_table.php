@@ -20,6 +20,7 @@ class CreateItemsTable extends Migration
             $table->integer( 'pension' );
             $table->integer( 'seguro' );
             $table->integer( 'materiales' );
+            $table->date( 'inicio' );
             $table->date( 'culminacion' );
             $table->integer( 'desc_matricula' );
             $table->integer( 'desc_pension' );

@@ -265,6 +265,11 @@ return [
             'icon' => 'fas fa-fw fa-user',
         ],
         [
+            'text' => 'lista_alumnos',
+            'url'  => 'alumno/lista',
+            'icon' => 'fas fa-clipboard-list',
+        ],
+        [
             'text' => 'config',
             'url'  => 'item',
             'icon' => 'fas fa-cogs',

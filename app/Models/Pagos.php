@@ -17,10 +17,15 @@ class Pagos extends Model
 
     public function crear( $data ){
 
-    	$pago 			    = new Pagos();
-        $pago->alumno_id    = $data['alumno_id'];
-    	$pago->mes_id       = $data['mes_id'];
-        $pago->valor_pago   = $data['pago'];
+    	$pago 			        = new Pagos();
+        $pago->alumno_id        = $data['alumno_id'];
+    	$pago->mes_id           = $data['mes_id'];
+        $pago->fecha_pago       = $data['fecha_pago'];
+        $pago->pago_matricula   = $data['p_matricula'];
+        $pago->pago_pension     = $data['p_pension'];
+        $pago->pago_lonchera    = $data['p_lonchera'];
+        $pago->pago_seguro      = $data['p_seguro'];
+        $pago->pago_materiales  = $data['p_materiales'];
 
     	$pago->save();        
         return $pago->id;

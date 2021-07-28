@@ -48,7 +48,7 @@
                                     </div>
                                     <div class="col-4">
                                         <label for="fecha_ingreso">Fecha de ingreso:</label>
-                                        <input type="date" v-model="fecha_ingreso" id="fecha_ingreso" class="form-control" name="fecha_ingreso" placeholder="fecha_ingreso">
+                                        <input type="date" v-model="fecha_ingreso" id="fecha_ingreso" class="form-control" name="fecha_ingreso" placeholder="fecha_ingreso" value="{{$items[0]->inicio}}">
                                     </div>
                                     <div class="col-4">
                                         <label for="fecha_retiro">Fecha de retiro:</label>
@@ -127,22 +127,12 @@
     $(".chosen-select").chosen();
 
     var formvalid 	= true;
-    var today       = new Date();
-    var year        = today.getFullYear();
-    var day         = today.getDate();
-    var month       = today.getMonth();
 
     $(document).ready(function(){
 
         setTimeout(function(){
             $( '#div_hermano' ).css( 'display', 'none' );
         }, 1000);
-
-        month = getMes( month );
-
-        let hoy = year + '-' + 0 + parseInt( month ) + '-' + day;
-
-        $( '#fecha_ingreso' ).val(hoy);
 
     });
 
@@ -159,6 +149,12 @@
     } 
 
     function enviarDatos( datos ) {
+
+        let fecha           = new Date( $( '#fecha_ingreso' ).val() );
+        let manana = new Date( fecha );
+        manana.setDate( fecha.getDate() + 1 );
+        let anoInicio         = manana.getFullYear();
+        let mesInicio         = manana.getMonth() + 1;
 
         event.preventDefault();
 
@@ -188,7 +184,9 @@
                         hermano_id: $( '#hermano_de' ).val(),
                         descuento: $( '#descuento' ).is( ':checked' ),
                         acudiente: $( '#acudiente' ).val(),
-                        telefono: $( '#telefono' ).val()
+                        telefono: $( '#telefono' ).val(),
+                        mesInicio: mesInicio,
+                        anoInicio: anoInicio
 
                     };
                     
@@ -220,7 +218,7 @@
             toastr.error( 'El campo matricula es obligatorio' );
         }
 
-        if ( $( '#jornada' ).val().length == "NULL" ) {
+        if ( $( '#jornada' ).val() == "NULL" ) {
             formvalid = false;
             toastr.error( 'El campo jornada es obligatorio' );
         }
@@ -245,7 +243,7 @@
             toastr.error( 'El campo seguro es obligatorio' );
         }
 
-        if ( $( '#grado' ).val().length == "NULL" ) {
+        if ( $( '#grado' ).val() == "NULL" ) {
             formvalid = false;
             toastr.error( 'El campo grado es obligatorio' );
         }

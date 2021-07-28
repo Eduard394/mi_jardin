@@ -70,15 +70,31 @@ class Alumnos extends Model
 
     }
 
-    public function editarDeuda ( $data ) {
+    public function editarDeuda ( $data, $id ) {
 
-        $alumno                     = Alumnos::find( $data['alumno_id'] );
+        $alumno                     = Alumnos::find( $id );
         $alumno->deuda              = $data['deuda'];
-        $alumno->deuda_pension 	    = $data['pension'];
-        $alumno->deuda_lonchera 	= $data['lonchera_valor'];
+        $alumno->deuda_matricula 	= $data['p_matricula'];
+        $alumno->deuda_pension 	    = $data['p_pension'];
+        $alumno->deuda_lonchera 	= $data['p_lonchera'];
+        $alumno->deuda_seguro 	    = $data['p_seguro'];
+        $alumno->deuda_materiales   = $data['p_materiales'];
 
         $alumno->save();        
         return $alumno->deuda;
 
     }
+
+    public function actualizarDeuda ( $data, $id ) {
+
+        $alumno                     = Alumnos::find( $id );
+        $alumno->deuda              = $data[0]->deuda;
+        $alumno->deuda_pension 	    = $data[0]->pension;
+        $alumno->deuda_lonchera 	= $data[0]->lonchera_valor;
+
+        $alumno->save();        
+        return $alumno->deuda;
+
+    }
+
 }

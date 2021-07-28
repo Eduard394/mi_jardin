@@ -23,20 +23,20 @@ class ReporteController extends Controller
 
     public function getInfo() {
 
-        $data['discriminado'] = DB::table( 'pagos as p' )
-                    ->select(DB::raw('sum(p.valor_pago) as pagos, a.grado'))
-                    ->join( 'alumnos as a', 'p.alumno_id', '=', 'a.id')
-                    ->groupBy( 'a.grado' )
-                    ->get();
+        // $data['discriminado'] = DB::table( 'pagos as p' )
+        //             ->select(DB::raw('sum(p.pago_matricula, p.pago_pension, p.pago_lonchera, p.pago_seguro, p.pago_matricula) as pagos, a.grado'))
+        //             ->join( 'alumnos as a', 'p.alumno_id', '=', 'a.id')
+        //             ->groupBy( 'a.grado' )
+        //             ->get();
 
         $data['saldo_grado'] = DB::table( 'pagos as p' )
-                    ->select(DB::raw('sum(p.valor_pago) as pagos, a.grado'))
+                    ->select(DB::raw('sum(p.pago_matricula + p.pago_pension + p.pago_lonchera + p.pago_seguro + p.pago_matricula) as pagos, a.grado'))
                     ->join( 'alumnos as a', 'p.alumno_id', '=', 'a.id')
                     ->groupBy( 'a.grado' )
                     ->get();
 
         $data['saldo'] = DB::table( 'pagos as p' )
-                    ->select(DB::raw('sum(p.valor_pago) as Pagos, sum(a.deuda) as Deudas'))
+                    ->select(DB::raw('sum(p.pago_matricula + p.pago_pension + p.pago_lonchera + p.pago_seguro + p.pago_matricula) as Pagos, sum(a.deuda) as Deudas'))
                     ->join( 'alumnos as a', 'p.alumno_id', '=', 'a.id')
                     ->get();
 

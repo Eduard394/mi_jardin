@@ -42,7 +42,6 @@
                 </div>
                 <div class="box-body col-md-12">
                     <div class="row">
-                        <input type="text" id="lonchera_id" style="display: none;">
                         <form id="crearLonchera">
                             <div class="col-md-12">
                                 <div class="row"> 
@@ -87,7 +86,7 @@
                                             </div>  
                                             <div class="col-4">
                                                 <label for="p_matricula">Pago:</label>
-                                                <input type="number" v-model="p_matricula" id="p_matricula" class="form-control" name="p_matricula" placeholder="Valor a pagar">
+                                                <input type="number" v-model="p_matricula" id="p_matricula" class="form-control" name="p_matricula" placeholder="Valor a pagar" value="0">
                                             </div>
                                             <div class="col-4"></div>
                                         </div>
@@ -100,7 +99,7 @@
                                             </div>  
                                             <div class="col-4">
                                                 <label for="p_pension">Pago:</label>
-                                                <input type="number" v-model="p_pension" id="p_pension" class="form-control" name="p_pension" placeholder="Valor a pagar">
+                                                <input type="number" v-model="p_pension" id="p_pension" class="form-control" name="p_pension" placeholder="Valor a pagar" value="0">
                                             </div>  
                                             <div class="col-4"></div>
                                         </div>
@@ -113,7 +112,7 @@
                                             </div>  
                                             <div class="col-4">
                                                 <label for="p_lonchera">Pago:</label>
-                                                <input type="number" v-model="p_lonchera" id="p_lonchera" class="form-control" name="p_lonchera" placeholder="Valor a pagar">
+                                                <input type="number" v-model="p_lonchera" id="p_lonchera" class="form-control" name="p_lonchera" placeholder="Valor a pagar" value="0">
                                             </div>  
                                             <div class="col-4"></div>
                                         </div>
@@ -126,7 +125,7 @@
                                             </div>  
                                             <div class="col-4">
                                                 <label for="p_seguro">Pago:</label>
-                                                <input type="number" v-model="p_seguro" id="p_seguro" class="form-control" name="p_seguro" placeholder="Valor a pagar">
+                                                <input type="number" v-model="p_seguro" id="p_seguro" class="form-control" name="p_seguro" placeholder="Valor a pagar" value="0">
                                             </div>  
                                             <div class="col-4"></div>
                                         </div>
@@ -139,7 +138,7 @@
                                             </div>  
                                             <div class="col-4">
                                                 <label for="p_materiales">Pago:</label>
-                                                <input type="number" v-model="p_materiales" id="p_materiales" class="form-control" name="p_materiales" placeholder="Valor a pagar">
+                                                <input type="number" v-model="p_materiales" id="p_materiales" class="form-control" name="p_materiales" placeholder="Valor a pagar" value="0">
                                             </div> 
                                         </div> 
                                     </div>
@@ -168,6 +167,9 @@
     var year        = today.getFullYear();
     var day         = today.getDate();
     var month       = today.getMonth();
+    var fMat        = false;
+    var fPen        = false;
+    var fHer        = false;
     var fechaActual;
 
     $(".chosen-select").chosen();
@@ -241,8 +243,7 @@
                 }
             
             })
-        } else
-            toastr.error( 'Los campos alumno y mes son obligatorios' );
+        }
             
     }
 
@@ -250,6 +251,10 @@
 
         $( '.alert-descuento' ).hide();
         $( '.alert-mensaje' ).hide();
+
+        fMat      = false;
+        fPen      = false;
+        fHer      = false;
 
         if ( data[ 'return' ] ) {
             
@@ -267,8 +272,10 @@
             if ( datos.deuda > 0 ) {
 
                 let fecha           = new Date( $( '#fecha_pago' ).val() );
-                let diaPago         = fecha.getDate();
-                let mesPago         = fecha.getMonth() + 1;
+                let manana = new Date( fecha );
+                manana.setDate( fecha.getDate() + 1 );
+                let diaPago         = manana.setDate(fecha.getDate());
+                let mesPago         = manana.getMonth() + 1;
                 let desctPension    = false;
                 let descHermano     = false;
                 let valorDesc       = 0;
@@ -279,10 +286,14 @@
 
                 if ( mesPago == $( '#mes' ).val() && diaPago < 6 && datos.descuento ){
 
-                    if ( datos.hermano)
+                    if ( datos.hermano ) {
                         valorDesc = datosI.desc_hermano;
-                    else
+                        fHer = true;
+                    }
+                    else {
                         valorDesc = datosI.desc_pension;
+                        fPen = true;
+                    }
 
                 }
 
@@ -291,22 +302,27 @@
                     mensaje += 'pensión ';
                     mensaje2 += 'pensión ';
 
-                    if ( datos.hermano )
+                    if ( datos.hermano ){
                         valorDesc = datosI.desc_hermano;
-                    else
+                        fHer = true;
+                    }
+                    else {
                         valorDesc = datosI.desc_pension;
+                        fPen = true;
+                    }
 
                 }
 
                 if ( $( '#fecha_pago' ).val() < '2021-07-10' ) {
 
-                    valorDescMat = datosI.desc_matricula ;
+                    valorDescMat = datosI.desc_matricula;
                     mensaje += ( valorDesc > 0 ) ? 'y matrícula ' : 'matrícula ';
                     mensaje2 += ( valorDesc > 0 ) ? 'y matrícula ' : 'matrícula ';
+                    fMat = true;
 
                 }
 
-                if ( valorDesc > 0 || valorDescMat > 0 ){
+                if ( ( valorDesc > 0 || valorDescMat > 0 ) && ( datos.deuda_matricula > 0 || datos.deuda_pension > 0 ) ){
                     
                     mensaje += 'por pronto pago.';
 
@@ -394,7 +410,7 @@
     function saveData() {
 
         formvalid = true;
-        formvalid = validarDatos();
+        formvalid = validarDatosPago();
         
         if ( formvalid )
             enviarDatos();
@@ -419,7 +435,18 @@
 
                         alumno_id: $( '#alumnos' ).val(),
                         mes_id: $( '#mes' ).val(),
-                        pago: $( '#pago' ).val()
+                        year: $( '#year' ).val(),
+                        fecha_pago: $( '#fecha_pago' ).val(),
+                        p_matricula: $( '#p_matricula' ).val(),
+                        p_pension: $( '#p_pension' ).val(),
+                        p_lonchera: $( '#p_lonchera' ).val(),
+                        p_seguro: $( '#p_seguro' ).val(),
+                        p_materiales: $( '#p_materiales' ).val(),
+                        v_matricula: $( '#d_matricula' ).val(),
+                        v_pension: $( '#d_pension' ).val(),
+                        fMat: fMat,
+                        fPen: fPen,
+                        fHer: fHer
 
                     };
                     
@@ -428,9 +455,7 @@
                     if( resp.status == 200 ){
                         
                         toastr.success( 'Pago exitoso' );
-
-                        $( '#deuda' ).val( resp.data );
-                        clearForm();
+                        location.reload();
                         
                     } else
                         toastr.error( 'Error en el pago' );
@@ -443,7 +468,6 @@
     }
 
     function validarDatos(){
-
 
         if ( $( '#mes' ).val() == "NULL" ) {
             formvalid = false;
@@ -463,6 +487,37 @@
         if ( $( '#fecha_pago' ).val().length <= 0 ) { 
             formvalid = false;
             toastr.error( 'El campo fecha de pago es obligatorio' );
+        }
+
+        return formvalid;
+
+    }
+
+    function validarDatosPago(){
+
+        if ( $( '#d_matricula' ).val() < $( '#p_matricula' ).val() ) {
+            formvalid = false;
+            toastr.error( 'El pago de matrícula no debe se mayor a la deuda' );
+        }
+
+        if ( $( '#d_pension' ).val() < $( '#p_pension' ).val() ) {
+            formvalid = false;
+            toastr.error( 'El pago de pensión no debe se mayor a la deuda' );
+        }
+
+        if ( parseInt( $( '#d_lonchera' ).val() ) < parseInt( $( '#p_lonchera' ).val() ) ) {
+            formvalid = false;
+            toastr.error( 'El pago de lonchera no debe se mayor a la deuda' );
+        }
+
+        if ( $( '#d_seguro' ).val() < $( '#p_seguro' ).val() ) {
+            formvalid = false;
+            toastr.error( 'El pago del seguro no debe se mayor a la deuda' );
+        }
+
+        if ( $( '#d_materiales' ).val() < $( '#p_materiales' ).val() ) {
+            formvalid = false;
+            toastr.error( 'El pago de materiales no debe se mayor a la deuda' );
         }
 
         return formvalid;
@@ -496,6 +551,32 @@
         $( '#div_materiales' ).hide();
 
     }
+
+    $( document ).on( 'change', '#mes', function() {
+        ocultarDiv();
+        $( '.alert-descuento' ).hide();
+        $( '.alert-mensaje' ).hide();
+    });
+
+    $( document ).on( 'change', '#alumnos', function() {
+        ocultarDiv();
+        $( '.alert-descuento' ).hide();
+        $( '.alert-mensaje' ).hide();
+    });
+
+    $( document ).on( 'change', '#year', function() {
+        ocultarDiv();
+        $( '.alert-descuento' ).hide();
+        $( '.alert-mensaje' ).hide();
+    });
+
+    $( document ).on( 'change', '#fecha_pago', function() {
+        ocultarDiv();
+        $( '.alert-descuento' ).hide();
+        $( '.alert-mensaje' ).hide();
+    });
+
+    
 
 </script>
 

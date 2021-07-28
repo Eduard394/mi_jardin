@@ -18,8 +18,8 @@ class ItemSeeder extends Seeder
 
             DB::table('items')->insert([
                 [   'id' => 1, 'matricula' => 230000, 'lonchera' => 70000, 'pension' => 200000,
-                    'seguro' => 15000, 'materiales' => 260000, 'culminacion' => '2022-05-31',
-                    'desc_matricula' => 30000, 'desc_pension' => 15000, 'desc_hermano' => 10000 ]
+                    'seguro' => 15000, 'materiales' => 260000, 'inicio' => '2021-08-01', 
+                    'culminacion' => '2022-05-31', 'desc_matricula' => 30000, 'desc_pension' => 15000, 'desc_hermano' => 10000 ]
                 ]);
         }else{
                 echo "\e[31mTable is not empty, therefore NOT "; 

@@ -17,5 +17,9 @@ return [
     'warning'                       => 'Warning',
     'information'                   => 'Information',
     'alumno'                        => 'Creación de alumno',
-    'config'                        => 'Configuración de items'
+    'config'                        => 'Configuración de items',
+    'pagos'                         => 'Pagos',
+    'index'                         => 'Inicio',
+    'reportes'                      => 'Reportes',
+    'lista_alumnos'                 => 'Listado de alumnos'
 ];

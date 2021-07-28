@@ -51,9 +51,7 @@ class PagosController extends Controller
                     ->limit( 1 )
                     ->get();
         
-        $items = DB::table( 'items as i' )
-                    ->select( '*' )
-                    ->get();
+        $items = $this->getItems();
 
         if ( $data[ 'year_id' ] == $ultimoMes[0]->year ) {
 
@@ -74,9 +72,10 @@ class PagosController extends Controller
 
                 } else {
 
-                    $this->mesCobrado->crear( $data[ 'alumno_id' ], $data[ 'mes_id' ], $data[ 'year' ] );
+                    $this->mesCobrado->crear( $data[ 'alumno_id' ], $data[ 'mes_id' ], $data[ 'year_id' ] );
+                    
                     $deuda[0]->deuda = $deuda[0]->deuda + $deuda[0]->lonchera_valor + $deuda[0]->pension;
-                    $this->alumno->editarDeuda( $deuda );
+                    $this->alumno->actualizarDeuda( $deuda, $data[ 'alumno_id' ] );
 
                     $datos['deudas'] = $this->getDeudas( $data[ 'alumno_id' ] );
                     $datos['items']  = $items;
@@ -111,9 +110,9 @@ class PagosController extends Controller
 
                 } else {
 
-                    $this->mesCobrado->crear( $data[ 'alumno_id' ], $data[ 'mes_id' ], $data[ 'year' ] );
+                    $this->mesCobrado->crear( $data[ 'alumno_id' ], $data[ 'mes_id' ], $data[ 'year_id' ] );
                     $deuda[0]->deuda = $deuda[0]->deuda + $deuda[0]->lonchera_valor + $deuda[0]->pension;
-                    $this->alumno->editarDeuda( $deuda );
+                    $this->alumno->actualizarDeuda( $deuda, $data[ 'alumno_id' ] );
 
                     $datos['deudas'] = $this->getDeudas( $data[ 'alumno_id' ] );
                     $datos['items']  = $items;
@@ -137,35 +136,24 @@ class PagosController extends Controller
 
     }
 
-    public function createPago ( Request $request ) {
-
-        $data = $request->all();
-
-        $result = $this->pagos->crear( $data );
-
-        if ( $result ) {
-
-            $deuda = DB::table( 'alumnos as a' )
-                    ->select( 'a.deuda' )
-                    ->where( 'a.id', $data[ 'alumno_id' ] )
-                    ->get();
-
-            $data['deuda'] = $deuda[0]->deuda - $data[ 'pago' ];
-            
-            return $this->alumno->editarDeuda( $data );
-
-        }
-
-    }
-
     public function getDeudas( $alumnoId ) {
 
         $deuda = DB::table( 'alumnos as a' )
                     ->select( '*' )
                     ->where( 'a.id', $alumnoId)
                     ->get();
-
+        
         return $deuda;
+
+    }
+
+    public function getItems() {
+
+        $items = DB::table( 'items as i' )
+                    ->select( '*' )
+                    ->get();
+
+        return $items;
 
     }
 
@@ -185,6 +173,51 @@ class PagosController extends Controller
             case 10: return 'octubre'; break;
             case 11: return 'noviembre'; break;
             case 12: return 'diciembre'; break;
+
+        }
+
+    }
+
+    public function createPago ( Request $request ) {
+
+        $data = $request->all();
+        $items = $this->getItems();
+        $total = 0;
+
+        $result = $this->pagos->crear( $data );
+
+        if ( $result ) {
+
+            $deuda = DB::table( 'alumnos as a' )
+                    ->select( '*' )
+                    ->where( 'a.id', $data[ 'alumno_id' ] )
+                    ->get();
+
+            if ( $data[ 'fPen' ] &&  ( $data[ 'v_pension' ] == $data[ 'p_pension' ] ) ) {
+                $data[ 'p_pension' ] = $deuda[0]->deuda_pension - $deuda[0]->pension;
+                $total += $deuda[0]->pension;
+            } else if ( $data[ 'fHer' ] &&  ( $data[ 'v_pension' ] == $data[ 'p_pension' ] ) ) {
+                $data[ 'p_pension' ] = $deuda[0]->deuda_pension - $deuda[0]->pension;
+                $total += $deuda[0]->pension;
+            } else {
+                $total += $data[ 'p_pension' ];
+                $data[ 'p_pension' ] = $deuda[0]->deuda_pension - $data[ 'p_pension' ];                
+            }
+
+            if ( $data[ 'fMat' ] &&  ( $data[ 'v_matricula' ] == $data[ 'p_matricula' ] ) ) {
+                $data[ 'p_matricula' ] = $deuda[0]->deuda_matricula - $deuda[0]->matricula;
+                $total += $deuda[0]->matricula;
+            } else {
+                $total += $data[ 'p_matricula' ];
+                $data[ 'p_matricula' ] = $deuda[0]->deuda_matricula - $data[ 'p_matricula' ];
+            }
+
+            $data[ 'deuda' ]        = $deuda[0]->deuda - $total - $data[ 'p_lonchera' ] - $data[ 'p_seguro' ] - $data[ 'p_materiales' ];
+            $data[ 'p_lonchera' ]   = $deuda[0]->deuda_lonchera - $data[ 'p_lonchera' ];
+            $data[ 'p_seguro' ]     = $deuda[0]->deuda_seguro - $data[ 'p_seguro' ];
+            $data[ 'p_materiales' ] = $deuda[0]->deuda_materiales - $data[ 'p_materiales' ];
+            
+            return $this->alumno->editarDeuda( $data, $data[ 'alumno_id' ] );
 
         }
 
