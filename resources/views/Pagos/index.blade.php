@@ -82,7 +82,7 @@
                                         <div style="display: flex;">
                                             <div class="col-4">
                                                 <label for="d_matricula">Deuda matricula:</label>
-                                                <input type="number" v-model="d_matricula" id="d_matricula" class="form-control" name="d_matricula" placeholder="Deuda" disabled>
+                                                <input type="number" v-model="d_matricula" id="d_matricula" class="form-control" name="d_matricula" placeholder="Deuda" value="0" disabled>
                                             </div>  
                                             <div class="col-4">
                                                 <label for="p_matricula">Pago:</label>
@@ -95,7 +95,7 @@
                                         <div style="display: flex;">
                                             <div class="col-4">
                                                 <label for="d_pension">Deuda pensión:</label>
-                                                <input type="number" v-model="d_pension" id="d_pension" class="form-control" name="d_pension" placeholder="Deuda" disabled>
+                                                <input type="number" v-model="d_pension" id="d_pension" class="form-control" name="d_pension" placeholder="Deuda" value="0" disabled>
                                             </div>  
                                             <div class="col-4">
                                                 <label for="p_pension">Pago:</label>
@@ -108,7 +108,7 @@
                                         <div style="display: flex;">
                                             <div class="col-4">
                                                 <label for="d_lonchera">Deuda lonchera:</label>
-                                                <input type="number" v-model="d_lonchera" id="d_lonchera" class="form-control" name="d_lonchera" placeholder="Deuda" disabled>
+                                                <input type="number" v-model="d_lonchera" id="d_lonchera" class="form-control" name="d_lonchera" placeholder="Deuda" value="0" disabled>
                                             </div>  
                                             <div class="col-4">
                                                 <label for="p_lonchera">Pago:</label>
@@ -121,7 +121,7 @@
                                         <div style="display: flex;">
                                             <div class="col-4">
                                                 <label for="d_seguro">Deuda seguro:</label>
-                                                <input type="number" v-model="d_seguro" id="d_seguro" class="form-control" name="d_seguro" placeholder="Deuda" disabled>
+                                                <input type="number" v-model="d_seguro" id="d_seguro" class="form-control" name="d_seguro" placeholder="Deuda" value="0" disabled>
                                             </div>  
                                             <div class="col-4">
                                                 <label for="p_seguro">Pago:</label>
@@ -134,7 +134,7 @@
                                         <div style="display: flex;">
                                             <div class="col-4">
                                                 <label for="d_materiales">Deuda materiales:</label>
-                                                <input type="number" v-model="d_materiales" id="d_materiales" class="form-control" name="d_materiales" placeholder="Deuda" disabled>
+                                                <input type="number" v-model="d_materiales" id="d_materiales" class="form-control" name="d_materiales" placeholder="Deuda" value="0" disabled>
                                             </div>  
                                             <div class="col-4">
                                                 <label for="p_materiales">Pago:</label>
@@ -146,7 +146,7 @@
                             </div>
                             <div class="col-md-12 alert alert-danger" role="alert" style="text-align: end; display: none; margin-top:1%; margin-bottom:1%;">
                             </div>
-                            <div class="col-md-12" style="text-align: end;">
+                            <div class="col-md-12 div_btns" style="text-align: end; display: none;">
                                 <a onclick="clearForm()" class="btn btn-secondary text-white"> Cancelar </a>
                                 <a onclick="saveData()" class="btn btn-success text-white"> Guardar </a>
                             </div>
@@ -187,6 +187,10 @@
         $( '#year' ).append(html);
 
         month = getMes( month );
+
+        if ( day <= 9 ) {
+            day = '0' + day;
+        }
 
         fechaActual = year + '-' + 0 + parseInt( month ) + '-' + day;
 
@@ -272,9 +276,9 @@
             if ( datos.deuda > 0 ) {
 
                 let fecha           = new Date( $( '#fecha_pago' ).val() );
-                let manana = new Date( fecha );
+                let manana          = new Date( fecha );
                 manana.setDate( fecha.getDate() + 1 );
-                let diaPago         = manana.setDate(fecha.getDate());
+                let diaPago         = manana.getDate();
                 let mesPago         = manana.getMonth() + 1;
                 let desctPension    = false;
                 let descHermano     = false;
@@ -284,7 +288,12 @@
                 mensaje             += 'Se aplicó descuento a ';
                 let mensaje2        = '';
 
+                $( '.div_btns' ).show();
+
                 if ( mesPago == $( '#mes' ).val() && diaPago < 6 && datos.descuento ){
+
+                    mensaje += 'pensión ';
+                    mensaje2 += 'pensión ';
 
                     if ( datos.hermano ) {
                         valorDesc = datosI.desc_hermano;
@@ -341,7 +350,6 @@
                 } else {
 
                     $( '#div_matricula' ).hide();
-                    $( '#d_matricula' ).val( '' );
 
                 }
 
@@ -354,7 +362,6 @@
                 } else {
 
                     $( '#div_pension' ).hide();
-                    $( '#d_pension' ).val( '' );
 
                 }
 
@@ -366,7 +373,6 @@
                 } else {
 
                     $( '#div_lonchera' ).hide();
-                    $( '#d_lonchera' ).val( '' );
 
                 }
 
@@ -378,7 +384,6 @@
                 } else {
 
                     $( '#div_seguro' ).hide();
-                    $( '#d_seguro' ).val( '' );
 
                 }
 
@@ -390,7 +395,6 @@
                 } else {
 
                     $( '#div_materiales' ).hide();
-                    $( '#d_materiales' ).val( '' );
 
                 }
 
@@ -495,12 +499,12 @@
 
     function validarDatosPago(){
 
-        if ( $( '#d_matricula' ).val() < $( '#p_matricula' ).val() ) {
+        if ( parseInt( $( '#d_matricula' ).val() ) < parseInt( $( '#p_matricula' ).val() ) ) {
             formvalid = false;
             toastr.error( 'El pago de matrícula no debe se mayor a la deuda' );
         }
 
-        if ( $( '#d_pension' ).val() < $( '#p_pension' ).val() ) {
+        if ( parseInt( $( '#d_pension' ).val() ) < parseInt( $( '#p_pension' ).val() ) ) {
             formvalid = false;
             toastr.error( 'El pago de pensión no debe se mayor a la deuda' );
         }
@@ -510,12 +514,12 @@
             toastr.error( 'El pago de lonchera no debe se mayor a la deuda' );
         }
 
-        if ( $( '#d_seguro' ).val() < $( '#p_seguro' ).val() ) {
+        if ( parseInt( $( '#d_seguro' ).val() ) < parseInt( $( '#p_seguro' ).val() ) ) {
             formvalid = false;
             toastr.error( 'El pago del seguro no debe se mayor a la deuda' );
         }
 
-        if ( $( '#d_materiales' ).val() < $( '#p_materiales' ).val() ) {
+        if ( parseInt( $( '#d_materiales' ).val() ) < parseInt( $( '#p_materiales' ).val() ) ) {
             formvalid = false;
             toastr.error( 'El pago de materiales no debe se mayor a la deuda' );
         }
@@ -549,6 +553,7 @@
         $( '#div_lonchera' ).hide();
         $( '#div_seguro' ).hide();
         $( '#div_materiales' ).hide();
+        $( '.div_btns' ).hide();
 
     }
 

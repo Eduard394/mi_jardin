@@ -25,9 +25,13 @@
                         <form id="crearAlumno">
                             <div class="col-md-12">
                                 <div class="row">
+                                @if(!empty($al))
+                                    <input hidden id="idAlumno" value="{{$al->id}}">
+                                @endif
+                                    
                                     <div class="col-4">
                                         <label for="nombre">Nombre:</label>
-                                        <input type="text" v-model="nombre" id="nombre" class="form-control" name="nombre"  placeholder="Nombre" >
+                                        <input type="text" v-model="nombre" id="nombre" class="form-control" name="nombre"  placeholder="Nombre" value="">
                                     </div>
                                     <div class="col-4">
                                         <label for="matricula">Matrícula:</label>
@@ -106,6 +110,10 @@
                                         <label for="telefono">Teléfono:</label>
                                         <input type="text" v-model="telefono" id="telefono" class="form-control" name="telefono"  placeholder="Teléfono" >
                                     </div>
+                                    <div class="col-4">
+                                        <label for="correo">Correo electrónico:</label>
+                                        <input type="text" v-model="correo" id="correo" class="form-control" name="correo"  placeholder="correo" >
+                                    </div>
                                 </div>
                             </div>
 
@@ -125,30 +133,104 @@
 <script>
 
     $(".chosen-select").chosen();
+    var datos;
 
     var formvalid 	= true;
 
     $(document).ready(function(){
-
+        
         setTimeout(function(){
             $( '#div_hermano' ).css( 'display', 'none' );
         }, 1000);
 
+        if ( $('#idAlumno').val() != undefined ) {
+            getAlumno($('#idAlumno').val());
+        }
+
     });
+
+    function getAlumno( idAlumno ) {
+
+        const myObject = new Vue({
+
+            created () {
+                this.getData()
+            },
+
+            methods : {
+
+                async getData(){
+                    
+                    const resp = await  axios.get( '/alumno/getAlumno', {
+                        params: { 
+                            alumno_id: idAlumno
+                        }
+                    } );
+                    
+                    if( resp.status == 200 ){
+
+                        let data = resp.data;
+
+                        $( '#nombre' ).val( data.nombre );
+                        $( '#matricula' ).val( data.matricula );
+                        $( '#materiales' ).val( data.materiales );
+                        $( '#jornada' ).val( data.jornada );
+                        $( '#fecha_ingreso' ).val( data.fecha_ingreso );
+                        $( '#fecha_retiro' ).val( data.fecha_retiro );
+                        $( '#pension' ).val( data.pension );
+                        $( '#seguro' ).val( data.seguro )
+                        $( '#grado' ).val( data.grado );
+                        if ( data.lonchera ) {
+                            $( '#lonchera' ).prop( 'checked', true );
+                            $( '#div_valor_lonchera' ).show();
+                        }
+                        $( '#valor_lonchera' ).val( data.lonchera_valor );
+                        if ( data.hermano ){
+                            $( '#hermano' ).prop( 'checked', true );
+                            $( '#div_hermano' ).show();
+                            $( '#hermano_de' ).val( data.hermano_id );
+                            $( '#hermano_de' ).trigger( 'chosen:updated' );
+                        }
+                        if ( !data.descuento ) {
+                            $( '#descuento' ).prop( 'checked', false ); 
+                        }
+                        $( '#acudiente' ).val( data.acudiente );
+                        $( '#telefono' ).val( data.telefono );
+                        $( '#correo' ).val( data.correo );
+
+                        $( '#fecha_ingreso' ).prop( 'disabled', true );
+                        $( '#matricula' ).prop( 'disabled', true );
+                        $( '#materiales' ).prop( 'disabled', true );
+                        $( '#seguro' ).prop( 'disabled', true );
+                        
+                    } else
+                        toastr.error( 'Error en la busqueda' );
+                    
+                }
+            }
+        
+        })
+
+    }
 
     function saveData() {
 
         formvalid = true;
         formvalid = validarDatos();
         
-        if( formvalid )
-            enviarDatos();
+        if( formvalid ) {
+            if ( $('#idAlumno').val() != undefined ) {
+                update();
+            } else {
+                save();
+            }
+        }
         else 
             validarDatos();
         
     } 
 
-    function enviarDatos( datos ) {
+    function save() {
 
         let fecha           = new Date( $( '#fecha_ingreso' ).val() );
         let manana = new Date( fecha );
@@ -185,6 +267,7 @@
                         descuento: $( '#descuento' ).is( ':checked' ),
                         acudiente: $( '#acudiente' ).val(),
                         telefono: $( '#telefono' ).val(),
+                        correo: $( '#correo' ).val(),
                         mesInicio: mesInicio,
                         anoInicio: anoInicio
 
@@ -196,6 +279,58 @@
                         
                         toastr.success( 'Alumno creado exitosamente' );
                         location.reload();
+
+                    } else
+                        toastr.error( 'Error en la busqueda' );
+                    
+                }
+            }
+        
+        })
+    }
+
+    function update() {
+
+        event.preventDefault();
+
+        const myObject = new Vue({
+
+            created () {
+                this.save()
+            },
+
+            methods : {
+                async save(){
+
+                    let data = {
+
+                        alumno_id: $( '#idAlumno' ).val(),
+                        nombre: $( '#nombre' ).val(),
+                        matricula: $( '#matricula' ).val(),
+                        materiales: $( '#materiales' ).val(),
+                        jornada: $( '#jornada' ).val(),
+                        fecha_ingreso: $( '#fecha_ingreso' ).val(),
+                        fecha_retiro: $( '#fecha_retiro' ).val(),
+                        pension: $( '#pension' ).val(),
+                        seguro: $( '#seguro' ).val(),
+                        grado: $( '#grado' ).val(),
+                        lonchera: $( '#lonchera' ).is( ':checked' ),
+                        lonchera_valor: $( '#valor_lonchera' ).val(),
+                        hermano: $( '#hermano' ).is( ':checked' ),
+                        hermano_id: $( '#hermano_de' ).val(),
+                        descuento: $( '#descuento' ).is( ':checked' ),
+                        acudiente: $( '#acudiente' ).val(),
+                        telefono: $( '#telefono' ).val(),
+                        correo: $( '#correo' ).val(),
+
+                    };
+                    
+                    const resp = await  axios.post( '/alumno/update', data );
+                    
+                    if( resp.status == 200 ){
+                        
+                        toastr.success( 'Alumno actualizado exitosamente' );
+                        window.location.href = "/alumno/lista";
 
                     } else
                         toastr.error( 'Error en la busqueda' );
@@ -233,9 +368,9 @@
             toastr.error( 'El campo fecha de retiro es obligatorio' );
         }
 
-        if ( $( '#pension' ).val() <= 0 || $( '#pension' ).val() == ''  ) {
+        if ( $( '#pension' ).val() < 0 || $( '#pension' ).val() == ''  ) {
             formvalid = false;
-            toastr.error( 'El campo pensión es obligatorio' );
+            toastr.error( 'El campo pensión es obligatorio y mayor o igual a 0' );
         }
 
         if ( $( '#seguro' ).val() <= 0 || $( '#seguro' ).val() <= '' ) {

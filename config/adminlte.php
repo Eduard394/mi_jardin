@@ -285,6 +285,11 @@ return [
             'icon' => 'fas fa-dollar-sign',
         ],
         [
+            'text' => 'subsanar',
+            'url'  => 'subsanar',
+            'icon' => 'fas fa-check-double',
+        ],
+        [
             'text' => 'reportes',
             'url'  => 'reporte',
             'icon' => 'fas fa-chart-pie',

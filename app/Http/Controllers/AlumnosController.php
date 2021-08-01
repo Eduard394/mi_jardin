@@ -19,6 +19,21 @@ class AlumnosController extends Controller
         //$this->middleware('auth');
     }
 
+    public function show(Alumnos $alumno){
+
+        $al = Alumnos::find( $alumno->id );
+
+        $alumnos = DB::table( 'alumnos as a' )
+                    ->select( 'a.id', 'a.nombre' )
+                    ->orderBy( 'a.nombre', 'ASC' )
+                    ->get();
+        
+        $items = DB::table( 'items as i' )
+                    ->select( '*' )
+                    ->get();
+        return view( 'Alumnos.index', compact( 'alumnos', 'items', 'al' ) );
+    }
+
     public function index(){
 
         $alumnos = DB::table('alumnos as a')
@@ -29,7 +44,9 @@ class AlumnosController extends Controller
                     ->select('*')
                     ->get();
 
-    	return view( 'Alumnos.index', compact('alumnos', 'items') );
+        $al = '';
+
+    	return view( 'Alumnos.index', compact('alumnos', 'items', 'al') );
     }
 
     public function lista(){
@@ -68,16 +85,48 @@ class AlumnosController extends Controller
             if ( $data[ 'hermano' ] )
                 $edit = $this->alumno->editarHermano( $data[ 'hermano_id' ], $result );
             
-            
             return $this->mesCobrado->crear( $result, $data['mesInicio'], $data['anoInicio'] );
 
         }
         
     }
 
+    public function update(Request $request) {
+    
+        $data     = $request->all();
+
+        if ( !$data['lonchera'] )
+            $data['lonchera_valor'] = 0;
+   
+    	$result = $this->alumno->editar( $data );
+        
+        if ( $result ) {
+
+            if ( $data[ 'hermano' ] )
+                return $this->alumno->editarHermano( $data[ 'hermano_id' ], $result );
+            
+        }
+        
+    }
+
+    public function getAlumno(Request $request) {
+    
+        $data     = $request->all();
+        $alumno   = Alumnos::find( $data['alumno_id'] );
+        return $alumno;
+
+    }
+
     public function getAlumnos() {
 
+        // $alumnos = DB::table("alumnos a")
+        //             ->select("a.nombre", "a.grado", "a.acudiente", "a.telefono", "a.deuda", "concat ( max(mc.mes_id)", "'-'", "mc.'year' ) as mes")
+        //             ->join( 'mes_cobrados as mc', 'mc.alumno_id', '=', 'a.id' )
+        //             ->orderBy("mes","desc")
+        //             ->groupBy("a.nombre")
+        //             ->get();
+
         return Alumnos::all();
-        
+
     }
 }

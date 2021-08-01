@@ -36,6 +36,7 @@ class CreateAlumnosTable extends Migration
             $table->boolean( 'descuento' );
             $table->string( 'acudiente' );
             $table->string( 'telefono' );
+            $table->string( 'correo' )->nullable();
             $table->integer( 'deuda' );
             $table->boolean( 'estado' )->default(1);
             $table->timestamps();

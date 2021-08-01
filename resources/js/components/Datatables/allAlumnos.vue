@@ -38,7 +38,7 @@
                             style="width: 40%; cursor:pointer;">
                             {{column.label}}
                         </th>
-                        <!-- <th>Ver</th> -->
+                        <th>Ver</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,7 +49,8 @@
                         <td>{{alumno.acudiente}}</td>
                         <td>{{alumno.telefono}}</td>
                         <td>{{alumno.deuda}}</td>
-                        <!-- <td><a class="btn btn-success btn-sm text-white" onclick="editar()" :value="+alumno.id">Ver</a></td> -->
+                        <td>{{alumno.mes}}</td>
+                        <td><a class="btn btn-success btn-sm text-white" :href="'/alumno/' +  alumno.id" :value="+alumno.id">Ver</a></td>
                         
                     </tr>
                 </tbody>
@@ -114,6 +115,7 @@
                 {label: 'Acudiente', name: 'acudiente'},
                 {label: 'Teléfono', name: 'telefono'},
                 {label: 'Deuda', name: 'deuda'},
+                {label: 'Mes', name: 'mes'},
 
             ];
             columns.forEach((column) => {
@@ -179,7 +181,7 @@
             },
             getIndex(array, key, value) {
                 return array.findIndex(i => i[key] == value)
-            },
+            },  
         },
         computed: {
 
@@ -216,9 +218,7 @@
         }
     };
 
-    function editar() {
-        console.log('ccasofehod')
-    }
+    
 
 </script>
 

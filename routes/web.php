@@ -18,7 +18,9 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::get( 'alumno', [ AlumnosController::class,'index']);
 Route::get( 'alumno/getAlumnos', [ AlumnosController::class, 'getAlumnos' ]);
+Route::get( 'alumno/getAlumno', [ AlumnosController::class, 'getAlumno' ]);
 Route::post( 'alumno/crear', [ AlumnosController::class, 'crear' ] )->name( 'alumno.crear' );
+Route::post( 'alumno/update', [ AlumnosController::class, 'update' ] );
 Route::get( 'alumno/lista', [ AlumnosController::class,'lista' ] )->name( 'alumno.lista' );
 Route::resource( 'alumno/get', AlumnosController::class ); 
 
@@ -31,6 +33,8 @@ Route::get( 'valor', [ ValorLoncheraController::class, 'index' ] );
 Route::post( 'valor/updateValor', [ ValorLoncheraController::class, 'updateValor' ] );
 
 Route::get( 'pagos', [ PagosController::class, 'index' ] );
+Route::get( 'subsanar', [ PagosController::class, 'indexSubsanar' ] );
+Route::post( 'pagos/subsanar', [ PagosController::class, 'subsanar' ] );
 Route::post( 'pagos/validarMes', [ PagosController::class, 'validarMes' ] );
 Route::post( 'pagos/createPago', [ PagosController::class, 'createPago' ] );
 
@@ -39,3 +43,5 @@ Route::get( 'reporte/getInfo', [ ReporteController::class, 'getInfo' ] );
 
 Route::get( 'item', [ ItemController::class, 'index' ] );
 Route::post( 'item/actualizar', [ ItemController::class, 'actualizar' ] );
+
+Route::resource('alumno', AlumnosController::class);

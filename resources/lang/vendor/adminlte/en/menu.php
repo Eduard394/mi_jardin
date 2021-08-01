@@ -21,5 +21,6 @@ return [
     'pagos'                         => 'Pagos',
     'index'                         => 'Inicio',
     'reportes'                      => 'Reportes',
-    'lista_alumnos'                 => 'Listado de alumnos'
+    'lista_alumnos'                 => 'Listado de alumnos',
+    'subsanar'                      => 'Subsanar pago'
 ];
