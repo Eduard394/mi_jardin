@@ -70,7 +70,7 @@
                             </div>
                             <div class="col-md-12" style="text-align: end;">
                                 <a onclick="clearForm()" class="btn btn-secondary text-white"> Cancelar </a>
-                                <a onclick="saveData()" class="btn btn-success text-white"> Guardar </a>
+                                <a onclick="saveData()" class="btn btn-success text-white" id="guardar"><span id="esperaguardar"></span>Guardar </a>
                             </div>
                         </form>
                     </div>
@@ -89,13 +89,18 @@
 
     function saveData() {
 
+        $( '#esperaguardar' ).addClass( 'spinner-border spinner-border-sm mr-2' );
+        $( '#guardar' ).css( 'pointer-events', 'none' );
+
         formvalid = true;
         formvalid = validarDatos();
         
         if( formvalid )
             enviarDatos();
-        else 
-            validarDatos();
+        else {
+            $( '#esperaguardar' ).removeClass( 'spinner-border spinner-border-sm mr-2' );
+            $( '#guardar' ).css( 'pointer-events', '' );
+        }
         
     } 
 
@@ -133,6 +138,8 @@
                     if( resp.status == 200 ){
                         
                         toastr.success( 'Items actualizado exitosamente' );
+                        $( '#esperaguardar' ).removeClass( 'spinner-border spinner-border-sm mr-2' );
+                        $( '#guardar' ).css( 'pointer-events', '' );
 
                     } else
                         toastr.error( 'Error en la busqueda' );

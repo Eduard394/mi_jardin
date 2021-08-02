@@ -33,10 +33,12 @@ Route::get( 'valor', [ ValorLoncheraController::class, 'index' ] );
 Route::post( 'valor/updateValor', [ ValorLoncheraController::class, 'updateValor' ] );
 
 Route::get( 'pagos', [ PagosController::class, 'index' ] );
+Route::get( 'pagos/lista', [ PagosController::class,'lista' ] );
 Route::get( 'subsanar', [ PagosController::class, 'indexSubsanar' ] );
 Route::post( 'pagos/subsanar', [ PagosController::class, 'subsanar' ] );
 Route::post( 'pagos/validarMes', [ PagosController::class, 'validarMes' ] );
 Route::post( 'pagos/createPago', [ PagosController::class, 'createPago' ] );
+Route::get( 'pagos/getPagos', [ PagosController::class, 'getPagos' ]);
 
 Route::get( 'reporte', [ ReporteController::class, 'index' ] );
 Route::get( 'reporte/getInfo', [ ReporteController::class, 'getInfo' ] );

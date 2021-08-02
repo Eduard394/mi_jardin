@@ -148,7 +148,7 @@
                             </div>
                             <div class="col-md-12 div_btns" style="text-align: end; display: none;">
                                 <a onclick="clearForm()" class="btn btn-secondary text-white"> Cancelar </a>
-                                <a onclick="saveData()" class="btn btn-success text-white"> Guardar </a>
+                                <a onclick="saveData()" class="btn btn-success text-white" id="guardar"><span id="esperaguardar"></span>Guardar </a>
                             </div>
                         </form>
                     </div>
@@ -208,7 +208,8 @@
         if ( formvalid )   {
 
             $( '#espera' ).addClass( 'spinner-border spinner-border-sm mr-2' );
-            $( '#btCalcular' ).prop( 'disabled', true );
+            $( '#btCalcular' ).css( 'pointer-events', 'none' );
+            
 
             event.preventDefault();
 
@@ -237,6 +238,8 @@
 
                             $( '#espera' ).removeClass( 'spinner-border spinner-border-sm mr-2' );
                             $( '#btCalcular' ).prop( 'disabled', false );
+                            $( '#btCalcular' ).css( 'pointer-events', '' );
+
 
                             callbackValidate(resp.data);
                             
@@ -413,11 +416,18 @@
 
     function saveData() {
 
+        $( '#esperaguardar' ).addClass( 'spinner-border spinner-border-sm mr-2' );
+        $( '#guardar' ).css( 'pointer-events', 'none' );
+
         formvalid = true;
         formvalid = validarDatosPago();
         
         if ( formvalid )
             enviarDatos();
+        else {
+            $( '#esperaguardar' ).removeClass( 'spinner-border spinner-border-sm mr-2' );
+            $( '#btCalcular' ).css( 'pointer-events', '' );
+        }
         
     } 
 
@@ -459,6 +469,8 @@
                     if( resp.status == 200 ){
                         
                         toastr.success( 'Pago exitoso' );
+                        $( '#esperaguardar' ).removeClass( 'spinner-border spinner-border-sm mr-2' );
+                        $( '#btCalcular' ).css( 'pointer-events', '' );
                         location.reload();
                         
                     } else

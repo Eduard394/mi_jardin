@@ -53,6 +53,10 @@ class PagosController extends Controller
 
     }
 
+    public function lista(){
+        return view('Pagos.lista');
+    }
+
     public function validarMes ( Request $request ) {
 
         $data = $request->all();
@@ -286,6 +290,19 @@ class PagosController extends Controller
 
         }
         
+    }
+
+    public function getPagos() {
+
+        // $pagos = DB::table("pagos as p")
+        //             ->select("a.nombre", "p.*" )
+        //             ->join( 'alumnos as a', 'p.alumno_id', '=', 'a.id' )
+        //             ->get();
+
+        // return $pagos;
+
+        return Pagos::all();
+
     }
 
 }

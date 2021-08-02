@@ -119,14 +119,13 @@ class AlumnosController extends Controller
 
     public function getAlumnos() {
 
-        // $alumnos = DB::table("alumnos a")
-        //             ->select("a.nombre", "a.grado", "a.acudiente", "a.telefono", "a.deuda", "concat ( max(mc.mes_id)", "'-'", "mc.'year' ) as mes")
-        //             ->join( 'mes_cobrados as mc', 'mc.alumno_id', '=', 'a.id' )
-        //             ->orderBy("mes","desc")
-        //             ->groupBy("a.nombre")
-        //             ->get();
+        $alumnos = DB::table( 'alumnos as a' )
+                    ->select(DB::raw('a.id, a.nombre, a.grado, a.acudiente, a.telefono, a.deuda, concat(max(mc.mes_id), \'-\', mc.year) as mes') )
+                    ->join( 'mes_cobrados as mc', 'mc.alumno_id', '=', 'a.id')
+                    ->groupBy( 'a.id', 'a.grado', 'mc.year', 'a.nombre', 'a.acudiente', 'a.telefono', 'a.deuda' )
+                    ->get();
 
-        return Alumnos::all();
+        return $alumnos;
 
     }
 }
