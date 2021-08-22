@@ -136,6 +136,8 @@ class Alumnos extends Model
         $alumno->deuda              = $data[0]->deuda;
         $alumno->deuda_pension 	    = $data[0]->deuda_pension;
         $alumno->deuda_lonchera 	= $data[0]->deuda_lonchera;
+        $alumno->deuda_matricula 	= $data[0]->deuda_matricula;
+        $alumno->deuda_materiales 	= $data[0]->deuda_materiales;
 
         $alumno->save();        
         return $alumno->deuda;

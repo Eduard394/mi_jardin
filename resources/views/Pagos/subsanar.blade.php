@@ -40,6 +40,8 @@
                                             <option value="NULL" > Seleccione el item</option>
                                             <option value="pension" >Pensión</option>
                                             <option value="lonchera" >Lonchera</option>
+                                            <option value="matricula" >Matrícula</option>
+                                            <option value="materiales" >Materiales</option>
                                         </select>
                                     </div>
                                     <div class="col-md-3">
@@ -56,7 +58,7 @@
                             </div>
                             <div class="col-md-12 mt-3" style="text-align: end;">
                                 <a onclick="clearForm()" class="btn btn-secondary text-white"> Cancelar </a>
-                                <a onclick="saveData()" class="btn btn-success text-white"> Guardar </a>
+                                <a onclick="saveData()" class="btn btn-success text-white" id="guardar"><span id="esperaguardar"></span>Guardar </a>
                             </div>
                         </form>
                     </div>
@@ -75,11 +77,18 @@
 
     function saveData() {
 
+        $( '#esperaguardar' ).addClass( 'spinner-border spinner-border-sm mr-2' );
+        $( '#guardar' ).css( 'pointer-events', 'none' );
+
         formvalid = true;
         formvalid = validarDatos();
         
         if( formvalid )
             enviarDatos();
+        else {
+            $( '#esperaguardar' ).removeClass( 'spinner-border spinner-border-sm mr-2' );
+            $( '#btCalcular' ).css( 'pointer-events', '' );
+        }
         
     } 
 
@@ -109,14 +118,15 @@
                     
                     if( resp.status == 200 ){
 
+                        $( '#esperaguardar' ).removeClass( 'spinner-border spinner-border-sm mr-2' );
+                            $( '#btCalcular' ).css( 'pointer-events', '' );
+
                         if ( resp.data.error ) {
                             toastr.error( resp.data.error );
                         } else {
                             toastr.success( 'Se ha subsanado correctamente' );
                             location.reload();
                         }
-                        
-                        
 
                     } else
                         toastr.error( 'Error en la busqueda' );

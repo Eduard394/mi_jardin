@@ -245,6 +245,7 @@ class PagosController extends Controller
         $data = $request->all();
 
         $deuda = $this->getDeudas( $data[ 'alumno_id' ] );
+        //print_r($deuda);die;
 
         if ( $data[ 'item_id' ] == 'pension' ) {
 
@@ -283,6 +284,48 @@ class PagosController extends Controller
             } else if ( $data[ 'tipo_subsanacion' ] == 2 ) {
 
                 $deuda[0]->deuda_lonchera = $deuda[0]->deuda_lonchera + $data[ 'valor' ];
+                $deuda[0]->deuda = $deuda[0]->deuda + $data[ 'valor' ];
+                return $this->alumno->subsanarDeuda( $deuda, $data[ 'alumno_id' ] );
+
+            }
+
+        } else if ( $data[ 'item_id' ] == 'matricula' ){
+
+            if ( $data[ 'tipo_subsanacion' ] == 1 ) {
+
+                if ( $data[ 'valor' ] > $deuda[0]->deuda_matricula ) {
+                    $return['error'] = 'El valor a subsanar es mayor a la deuda de la matrícula';
+                    return $return;
+                }
+
+                $deuda[0]->deuda_matricula = $deuda[0]->deuda_matricula - $data[ 'valor' ];
+                $deuda[0]->deuda = $deuda[0]->deuda - $data[ 'valor' ];
+                return $this->alumno->subsanarDeuda( $deuda, $data[ 'alumno_id' ] );
+
+            } else if ( $data[ 'tipo_subsanacion' ] == 2 ) {
+
+                $deuda[0]->deuda_matricula = $deuda[0]->deuda_matricula + $data[ 'valor' ];
+                $deuda[0]->deuda = $deuda[0]->deuda + $data[ 'valor' ];
+                return $this->alumno->subsanarDeuda( $deuda, $data[ 'alumno_id' ] );
+
+            }
+
+        } else if ( $data[ 'item_id' ] == 'materiales' ){
+
+            if ( $data[ 'tipo_subsanacion' ] == 1 ) {
+
+                if ( $data[ 'valor' ] > $deuda[0]->deuda_materiales ) {
+                    $return['error'] = 'El valor a subsanar es mayor a la deuda de la materiales';
+                    return $return;
+                }
+
+                $deuda[0]->deuda_materiales = $deuda[0]->deuda_materiales - $data[ 'valor' ];
+                $deuda[0]->deuda = $deuda[0]->deuda - $data[ 'valor' ];
+                return $this->alumno->subsanarDeuda( $deuda, $data[ 'alumno_id' ] );
+
+            } else if ( $data[ 'tipo_subsanacion' ] == 2 ) {
+
+                $deuda[0]->deuda_materiales = $deuda[0]->deuda_materiales + $data[ 'valor' ];
                 $deuda[0]->deuda = $deuda[0]->deuda + $data[ 'valor' ];
                 return $this->alumno->subsanarDeuda( $deuda, $data[ 'alumno_id' ] );
 

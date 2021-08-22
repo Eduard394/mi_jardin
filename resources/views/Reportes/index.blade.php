@@ -24,15 +24,15 @@
                         <div id="burbble-chart"></div>
                     </div>  
                     <div class="col-md-6"> 
-                        <div id="bar-chart"></div>
+                        <div id="donut-chart"></div>
                     </div>
                 </div>
                 <div class="col-md-12" style="display: flex;">  
                     <div class="col-md-6"> 
-                        <div id="donut-chart"></div>
+                        <div id="barh-chart"></div>
                     </div>
                     <div class="col-md-6"> 
-                        <div id="barh-chart"></div>
+                        <div id="meses-chart"></div>
                     </div>
                 </div>
             </div>
@@ -75,6 +75,9 @@
     function graficar ( data ) {
 
         $( '#contenedor').show();
+
+        let xDis = [];
+        let yDis = [];
         
         let dataX = [];
         let dataY = [];
@@ -87,6 +90,14 @@
 
         let xBarh = [];
         let yBarh = [];
+
+        let xMes = [];
+        let yMes = [];
+
+        $.each( data.discriminado[0], function( key, value ){
+            yDis.push( value );
+            xDis.push( key );
+        });
 
         $.each( data.saldo_grado, function( key, value ){
             dataX.push( value.grado );
@@ -107,6 +118,25 @@
             xBarh.push( value3.cantidad );
             yBarh.push( value3.jornada );
         });
+
+        $.each( data.ingreso_mes, function( key, value ){
+            yMes.push( value.pagos );
+            xMes.push( value.nombre );
+        });
+
+        var dataDis = [{
+            values: yDis,
+            labels: xDis,
+            type: 'pie'
+        }];
+
+        var layoutDis = {
+            title: {
+                text:'Saldos discriminados'
+            },
+            height: 400,
+            width: 450
+        };
 
         var data = [{
             values: dataY,
@@ -171,10 +201,26 @@
             title: 'Usuarios por jornada'
         };
 
+        var traceMes = {
+            x: xMes,
+            y: yMes,
+            type: 'bar'
+        };
+
+        var dataMes = [traceMes];
+
+        var layoutMes = {
+            height: 400,
+            width: 450,
+            title: 'Ingresos por mes'
+        };
+
+        Plotly.newPlot( 'discriminado-chart', dataDis, layoutDis );
         Plotly.newPlot( 'burbble-chart', data, layout );
         Plotly.newPlot( 'bar-chart', dataBar, layoutBar );
         Plotly.newPlot( 'donut-chart', dataDon, layoutDon );
         Plotly.newPlot( 'barh-chart', dataBarh, layoutBarh );
+        Plotly.newPlot( 'meses-chart', dataMes, layoutMes );
 
     }
 

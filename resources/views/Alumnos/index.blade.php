@@ -90,7 +90,7 @@
                                         <input type="checkbox" id="hermano" name="hermano">
                                     </div>
                                     <div id="div_hermano" class="col-4">
-                                        <label for="hermano_de">Hermano de:</label>
+                                        <label for="hermano_de">Hermano de:<span id="txHermano" style="color: #ad2538;"></span></label>
                                         <select name="hermano_de" id="hermano_de" class="custom-select chosen-select form-control">
                                             <option value="NULL" > Seleccione el hermano</option>
                                             @foreach($alumnos as $alum)
@@ -133,19 +133,22 @@
 <script>
 
     $(".chosen-select").chosen();
-    var datos;
 
+    var datos;
     var formvalid 	= true;
 
-    $(document).ready(function(){
+    $( document ).ready(function(){
         
         setTimeout(function(){
             $( '#div_hermano' ).css( 'display', 'none' );
         }, 1000);
 
         if ( $('#idAlumno').val() != undefined ) {
-            getAlumno($('#idAlumno').val());
+            getAlumno($( '#idAlumno' ).val());
         }
+
+        // $("#hermano_de").chosen({no_results_text: "No hay registros que coincidan con la busqueda"});
+	    // $('#hermano_de').trigger("chosen:updated");
 
     });
 
@@ -189,7 +192,10 @@
                             $( '#hermano' ).prop( 'checked', true );
                             $( '#div_hermano' ).show();
                             $( '#hermano_de' ).val( data.hermano_id );
-                            $( '#hermano_de' ).trigger( 'chosen:updated' );
+                            $( '#txHermano' ).text( ' ' + $("#hermano_de").children("option").filter(":selected").text() );
+                            setTimeout(function(){
+                                $( '#hermano_de' ).trigger( 'chosen:updated' );
+                            }, 5000);                            
                         }
                         if ( !data.descuento ) {
                             $( '#descuento' ).prop( 'checked', false ); 
