@@ -87,7 +87,7 @@
             enviarDatos();
         else {
             $( '#esperaguardar' ).removeClass( 'spinner-border spinner-border-sm mr-2' );
-            $( '#btCalcular' ).css( 'pointer-events', '' );
+            $( '#guardar' ).css( 'pointer-events', '' );
         }
         
     } 
@@ -119,7 +119,7 @@
                     if( resp.status == 200 ){
 
                         $( '#esperaguardar' ).removeClass( 'spinner-border spinner-border-sm mr-2' );
-                            $( '#btCalcular' ).css( 'pointer-events', '' );
+                        $( '#guardar' ).css( 'pointer-events', '' );
 
                         if ( resp.data.error ) {
                             toastr.error( resp.data.error );
