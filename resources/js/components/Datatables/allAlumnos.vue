@@ -39,6 +39,7 @@
                             {{column.label}}
                         </th>
                         <th>Ver</th>
+                        <th>Eliminar</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -51,6 +52,7 @@
                         <td>{{alumno.deuda}}</td>
                         <td>{{alumno.mes}}</td>
                         <td><a class="btn btn-success btn-sm text-white" :href="'/alumno/' +  alumno.id" :value="+alumno.id">Ver</a></td>
+                        <td><a class="btn btn-danger btn-sm text-white eliminar" @click="guardar(alumno.id)" :value="+alumno.id">Eliminar</a></td>
                         
                     </tr>
                 </tbody>
@@ -182,6 +184,30 @@
             getIndex(array, key, value) {
                 return array.findIndex(i => i[key] == value)
             },  
+        
+            async guardar (id) {
+
+                let data = {
+
+                    alumno_id: id
+
+                };
+
+                const resp = await  axios.post( '/alumno/eliminar', data );
+
+                if( resp.status == 200 ){
+
+                    console.log(resp.data)
+                    if ( resp.data.error ) {
+                        toastr.error( resp.data.error );
+                    } else {
+                        toastr.success( 'El alumno fue eliminado correctamente' );
+                        location.reload();
+                    }
+                    
+                } else
+                    toastr.error( 'Error eliminando alumno' );
+            },
         },
         computed: {
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Alumnos;
 use App\Models\MesCobrado;
+use App\Models\Pagos;
 use Illuminate\Support\Facades\DB;
 
 class AlumnosController extends Controller
@@ -127,5 +128,24 @@ class AlumnosController extends Controller
 
         return $alumnos;
 
+    }
+
+    public function eliminar(Request $request) {
+
+        $data     = $request->all();
+
+        $alumno   = DB::table( 'pagos as p' )
+                    ->select( '*' )
+                    ->where( 'p.alumno_id', $data[ 'alumno_id' ] )
+                    ->get();
+
+        if ( count( $alumno ) == 0 ) {
+            return $this->alumno->eliminar( $data[ 'alumno_id' ] );
+        }
+        else {
+            $nombre['error'] = 'Este alumno tiene pagos ya realizados';
+            return $nombre;
+        }
+        
     }
 }

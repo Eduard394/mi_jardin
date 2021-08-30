@@ -144,4 +144,24 @@ class Alumnos extends Model
 
     }
 
+    public function reversarDeuda ( $data ) {
+
+        $alumno                          = Alumnos::find( $data[ 'ultimo_pago' ] );
+        $alumno->deuda                   = $data['deuda'];
+        $alumno->deuda_.$data['item_id'] = $data['valor'];
+
+        $alumno->save();        
+        return $alumno->id;
+
+    }
+
+    public function eliminar($id){
+
+        $alumno     = Alumnos::find( $id );
+        $nombre     = $alumno->nombre;
+        
+        $alumno->delete();
+        return $nombre;
+    }
+
 }

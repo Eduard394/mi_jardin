@@ -240,7 +240,6 @@
                             $( '#btCalcular' ).prop( 'disabled', false );
                             $( '#btCalcular' ).css( 'pointer-events', '' );
 
-
                             callbackValidate(resp.data);
                             
                         } else

@@ -44,15 +44,18 @@
                                             <option value="materiales" >Materiales</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-3">
-                                        <label for="valor">Valor a subsanar:</label>
-                                        <input type="number" v-model="valor" id="valor" class="form-control" name="valor" placeholder="Valor a subsanar">
+                                    <div id="divRadio" class="col-md-3">
+                                        <label for="item">Tipo de subsanación:</label><br>
+                                        <input type="radio" id="borrar_deuda" name="tipo_subsanacion" value="1" disabled>
+                                        <label for="borrar_deuda">Borrar deuda</label><br>
+                                        <input type="radio" id="agregar_deuda" name="tipo_subsanacion" value="2" disabled>
+                                        <label for="agregar_deuda">Añadir deuda</label><br>
+                                        <input type="radio" id="reversar_pago" name="tipo_subsanacion" value="3" style="margin-left: 3.5%;" disabled>
+                                        <label for="reversar_pago">Reversar pago</label>
                                     </div>
-                                    <div class="col-md-3 mt-3">
-                                        <input type="radio" id="borrar_pago" name="tipo_subsanacion" value="1" checked>
-                                        <label for="borrar_pago">Borrar pago</label><br>
-                                        <input type="radio" id="agregar_pago" name="tipo_subsanacion" value="2">
-                                        <label for="agregar_pago">Añadir pago</label>
+                                    <div id="divValor" class="col-md-3">
+                                        <label for="valor">Valor a subsanar:</label>
+                                        <input type="number" v-model="valor" id="valor" class="form-control" name="valor" placeholder="Valor a subsanar" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -73,7 +76,8 @@
 
     $(".chosen-select").chosen();
 
-    var formvalid 	= true;
+    var formvalid 	 = true;
+    var ultimoPagoId = 0;
 
     function saveData() {
 
@@ -83,8 +87,9 @@
         formvalid = true;
         formvalid = validarDatos();
         
-        if( formvalid )
+        if( formvalid ) {
             enviarDatos();
+        }
         else {
             $( '#esperaguardar' ).removeClass( 'spinner-border spinner-border-sm mr-2' );
             $( '#guardar' ).css( 'pointer-events', '' );
@@ -110,7 +115,8 @@
                         alumno_id: $( '#alumnos' ).val(),
                         item_id: $( '#item' ).val(),
                         valor: $( '#valor' ).val(),
-                        tipo_subsanacion: $('input[name=tipo_subsanacion]:checked').val()
+                        tipo_subsanacion: $('input[name=tipo_subsanacion]:checked').val(),
+                        ultimo_pago: ultimoPagoId
 
                     };
                     
@@ -154,8 +160,82 @@
             toastr.error( 'El campo valor a subsanar debe ser mayor a 0' );
         }
 
+        if ( $('input[name=tipo_subsanacion]:checked').val() == undefined ) {
+            formvalid = false;
+            toastr.error( 'Debe seleccionar un tipo de subsanación' );
+        }
+
         return formvalid;
     }
+
+    $( document ).on( 'change', '#item, #alumnos', function() {
+
+        $( '#valor' ).val( '' );
+        $( '#borrar_deuda' ).prop("checked", false);
+        $( '#agregar_deuda' ).prop("checked", false);
+        $( '#reversar_pago' ).prop("checked", false);
+        ultimoPagoId = 0;
+
+        if ( $( '#item' ).val() != 'NULL' && $( '#alumnos' ).val() != 'NULL' ){
+            $( '#borrar_deuda' ).prop("disabled", false);
+            $( '#agregar_deuda' ).prop("disabled", false);
+            $( '#reversar_pago' ).prop("disabled", false);
+        } else {
+            $( '#borrar_deuda' ).prop("disabled", true);
+            $( '#agregar_deuda' ).prop("disabled", true);
+            $( '#reversar_pago' ).prop("disabled", true);
+            $( '#valor' ).prop("disabled", true);
+        }
+
+    });
+
+    $('input[type=radio][name=tipo_subsanacion]').change(function() {
+        
+        if ( $('input[name=tipo_subsanacion]:checked').val() == 1 || $('input[name=tipo_subsanacion]:checked').val() == 2 ){
+
+            $( '#valor' ).prop("disabled", false);
+            $( '#valor' ).val( '' );
+            ultimoPagoId = 0;
+
+        } else if ( $('input[name=tipo_subsanacion]:checked').val() == 3 ) {
+
+            $( '#valor' ).prop("disabled", true);
+
+            const myObject = new Vue({
+
+                created () {
+                    this.save()
+                },
+
+                methods : {
+                    async save(){
+
+                        let data = {
+
+                            alumno_id: $( '#alumnos' ).val(),
+                            item_id: $( '#item' ).val()
+
+                        };
+                        
+                        const resp = await  axios.post( '/pagos/getUltimoPago', data );
+                        
+                        if( resp.status == 200 ){
+
+                            let data = resp.data;
+                            $( '#valor' ).val(data[0]['pago_'+$( '#item' ).val()]);
+                            ultimoPagoId = data[0]['id'];
+
+                        } else
+                            toastr.error( 'Error en la busqueda' );
+                        
+                    }
+                }
+        
+            })
+            
+        }
+
+    });
 
 </script>
 @endsection

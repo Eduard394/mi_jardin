@@ -43,6 +43,7 @@
                 <tbody>
                     <tr v-for="pagos in paginatedUsers" :key="pagos.id">
                         <td style="display: none" id="id">{{pagos.id}}</td>
+                        <td>{{pagos.nombre}}</td>
                         <td>{{pagos.mes_id}}</td>
                         <td>{{pagos.fecha_pago}}</td>
                         <td>{{pagos.pago_pension}}</td>
@@ -108,6 +109,7 @@
         data() {
             let sortOrders = {};
             let columns = [
+                {label: 'Alumnos', name: 'alumno' },
                 {label: 'Mes', name: 'mes' },
                 {label: 'Fecha', name: 'fecha'},
                 {label: 'Pensión', name: 'pension'},

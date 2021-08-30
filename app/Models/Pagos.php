@@ -31,4 +31,20 @@ class Pagos extends Model
         return $pago->id;
 
     }
+
+    public function reversarPago ( $data ) {
+
+        $pago = Pagos::find( $data[ 'ultimo_pago' ] );
+
+        switch( $data['item_id'] ) {
+            case 'pension': $pago->pago_pension = 0; break;
+            case 'lonchera': $pago->pago_lonchera = 0; break;
+            case 'matricula': $pago->pago_matricula = 0; break;
+            case 'materiales': $pago->pago_materiales = 0; break;
+        }
+        
+        $pago->save();        
+        return $pago->id;
+
+    }
 }
