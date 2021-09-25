@@ -154,7 +154,7 @@ class AlumnosController extends Controller
         
     }
 
-    public function getDeudores() {
+    public function indexDeuda(){
 
         $alumnos    = DB::table( 'mes_cobrados as mc' )
                     ->select( DB::raw( 'max(mc.id)as id, mc.alumno_id' ) )
@@ -164,35 +164,34 @@ class AlumnosController extends Controller
         foreach( $alumnos as $key => $value ){
 
             $alumnos[ $key ] = $this->getDataAlumnos( $value->id );
-            
-            if ( $alumnos[ $key ]->meses <= 0 && $alumnos[ $key ]->deuda <= 0 ){
+       
+            if ( $alumnos[ $key ]->meses < 0 || ( $alumnos[ $key ]->deuda == 0 && $alumnos[ $key ]->meses == 0 ) ){
                 unset( $alumnos[ $key ] );
             } else {
 
-                $deudaP = $alumnos[ $key ]->pension * $alumnos[ $key ]->meses;
-                $deudaL = $alumnos[ $key ]->lonchera * $alumnos[ $key ]->meses;
+                if ( $alumnos[ $key ]->meses > 0 ) {
 
-                $alumnos[ $key ]->deuda_pension  += $deudaP;
-                $alumnos[ $key ]->deuda_lonchera += $deudaP;
-                $alumnos[ $key ]->deuda          += $deudaP + $deudaL;
+                    $deudaP = $alumnos[ $key ]->pension * $alumnos[ $key ]->meses;
+                    $deudaL = $alumnos[ $key ]->lonchera_valor * $alumnos[ $key ]->meses;
+
+                    $alumnos[ $key ]->deuda_pension  += $deudaP;
+                    $alumnos[ $key ]->deuda_lonchera += $deudaL;
+                    $alumnos[ $key ]->deuda          += $deudaP + $deudaL;
+
+                }
                 
             }
 
         }
 
-        print_r($alumnos[0]);die;
-        // unset($alumnos[0]);
-        print_r(count($alumnos));die;
-
+    	return view( 'Alumnos.deudores', compact( 'alumnos' ) );
         
-
-        return view( 'Alumnos.deudores', compact( 'alumnos' ) );
     }
 
     private function getDataAlumnos( $alumnoId ) {
 
         $data   = DB::table( 'mes_cobrados as mc' )
-                ->select( DB::raw( '*, extract(year from age( now(), concat( mc."year", \'-\', mc.mes_id, \'-01\' )::DATE ) ) * 12 + extract(month from age( now(), concat( mc."year", \'-\', mc.mes_id, \'-01\' )::DATE ) ) as meses' ) )
+                ->select( DB::raw( '*, extract(year from age( concat(date_part(\'year\', now()), \'-\', date_part(\'month\', now()), \'-01\')::DATE, concat( mc."year", \'-\', mc.mes_id, \'-01\' )::DATE ) ) * 12 + extract(month from age( concat(date_part(\'year\', now()), \'-\', date_part(\'month\', now()), \'-01\')::DATE, concat( mc."year", \'-\', mc.mes_id, \'-01\' )::DATE ) ) as meses' ) )
                 ->join( 'alumnos as a', 'mc.alumno_id', '=', 'a.id')
                 ->where( 'mc.id', $alumnoId )
                 ->get();

@@ -290,6 +290,11 @@ return [
             'icon' => 'fas fa-check-double',
         ],
         [
+            'text' => 'cuentas_cobro',
+            'url'  => 'alumno/indexDeuda',
+            'icon' => 'fas fa-book-dead',
+        ],
+        [
             'text' => 'reportes',
             'url'  => 'reporte',
             'icon' => 'fas fa-chart-pie',

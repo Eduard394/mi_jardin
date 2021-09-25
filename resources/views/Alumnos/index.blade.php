@@ -116,7 +116,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="col-md-12" style="text-align: end;">
                                 <a onclick="clearForm()" class="btn btn-secondary text-white"> Cancelar </a>
                                 <a onclick="saveData()" class="btn btn-success text-white" id="guardar"><span id="esperaguardar"></span>Guardar </a>
@@ -244,10 +243,10 @@
     function save() {
 
         let fecha           = new Date( $( '#fecha_ingreso' ).val() );
-        let manana = new Date( fecha );
+        let manana          = new Date( fecha );
         manana.setDate( fecha.getDate() + 1 );
-        let anoInicio         = manana.getFullYear();
-        let mesInicio         = manana.getMonth() + 1;
+        let anoInicio       = manana.getFullYear();
+        let mesInicio       = manana.getMonth() + 1;
 
         event.preventDefault();
 
