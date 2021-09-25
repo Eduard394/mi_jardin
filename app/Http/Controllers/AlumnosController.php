@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Alumnos;
 use App\Models\MesCobrado;
 use App\Models\Pagos;
+use DateTime;
 use Illuminate\Support\Facades\DB;
 
 class AlumnosController extends Controller
@@ -120,10 +121,14 @@ class AlumnosController extends Controller
 
     public function getAlumnos() {
 
+        // $alumnos = DB::table( 'alumnos as a' )
+        //             ->select(DB::raw('a.id, a.nombre, a.grado, a.acudiente, a.telefono, a.deuda, concat(max(mc.mes_id), \'-\', mc.year) as mes') )
+        //             ->join( 'mes_cobrados as mc', 'mc.alumno_id', '=', 'a.id')
+        //             ->groupBy( 'a.id', 'a.grado', 'mc.year', 'a.nombre', 'a.acudiente', 'a.telefono', 'a.deuda' )
+        //             ->get();
+
         $alumnos = DB::table( 'alumnos as a' )
-                    ->select(DB::raw('a.id, a.nombre, a.grado, a.acudiente, a.telefono, a.deuda, concat(max(mc.mes_id), \'-\', mc.year) as mes') )
-                    ->join( 'mes_cobrados as mc', 'mc.alumno_id', '=', 'a.id')
-                    ->groupBy( 'a.id', 'a.grado', 'mc.year', 'a.nombre', 'a.acudiente', 'a.telefono', 'a.deuda' )
+                    ->select(DB::raw('a.id, a.nombre, a.grado, a.acudiente, a.telefono, a.deuda') )
                     ->get();
 
         return $alumnos;
@@ -147,5 +152,52 @@ class AlumnosController extends Controller
             return $nombre;
         }
         
+    }
+
+    public function getDeudores() {
+
+        $alumnos    = DB::table( 'mes_cobrados as mc' )
+                    ->select( DB::raw( 'max(mc.id)as id, mc.alumno_id' ) )
+                    ->groupBy( 'mc.alumno_id' )
+                    ->get();
+        
+        foreach( $alumnos as $key => $value ){
+
+            $alumnos[ $key ] = $this->getDataAlumnos( $value->id );
+            
+            if ( $alumnos[ $key ]->meses <= 0 && $alumnos[ $key ]->deuda <= 0 ){
+                unset( $alumnos[ $key ] );
+            } else {
+
+                $deudaP = $alumnos[ $key ]->pension * $alumnos[ $key ]->meses;
+                $deudaL = $alumnos[ $key ]->lonchera * $alumnos[ $key ]->meses;
+
+                $alumnos[ $key ]->deuda_pension  += $deudaP;
+                $alumnos[ $key ]->deuda_lonchera += $deudaP;
+                $alumnos[ $key ]->deuda          += $deudaP + $deudaL;
+                
+            }
+
+        }
+
+        print_r($alumnos[0]);die;
+        // unset($alumnos[0]);
+        print_r(count($alumnos));die;
+
+        
+
+        return view( 'Alumnos.deudores', compact( 'alumnos' ) );
+    }
+
+    private function getDataAlumnos( $alumnoId ) {
+
+        $data   = DB::table( 'mes_cobrados as mc' )
+                ->select( DB::raw( '*, extract(year from age( now(), concat( mc."year", \'-\', mc.mes_id, \'-01\' )::DATE ) ) * 12 + extract(month from age( now(), concat( mc."year", \'-\', mc.mes_id, \'-01\' )::DATE ) ) as meses' ) )
+                ->join( 'alumnos as a', 'mc.alumno_id', '=', 'a.id')
+                ->where( 'mc.id', $alumnoId )
+                ->get();
+
+        return $data[0];
+
     }
 }

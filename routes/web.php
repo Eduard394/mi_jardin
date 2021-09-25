@@ -19,10 +19,11 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get( 'alumno', [ AlumnosController::class,'index']);
 Route::get( 'alumno/getAlumnos', [ AlumnosController::class, 'getAlumnos' ]);
 Route::get( 'alumno/getAlumno', [ AlumnosController::class, 'getAlumno' ]);
+Route::get( 'alumno/getDeudores', [ AlumnosController::class, 'getDeudores' ]);
+Route::get( 'alumno/lista', [ AlumnosController::class,'lista' ] )->name( 'alumno.lista' );
 Route::post( 'alumno/crear', [ AlumnosController::class, 'crear' ] )->name( 'alumno.crear' );
 Route::post( 'alumno/update', [ AlumnosController::class, 'update' ] );
 Route::post( 'alumno/eliminar', [ AlumnosController::class, 'eliminar' ] );
-Route::get( 'alumno/lista', [ AlumnosController::class,'lista' ] )->name( 'alumno.lista' );
 Route::resource( 'alumno/get', AlumnosController::class ); 
 
 Route::get( 'lonchera', [ LoncheraController::class, 'index' ] );

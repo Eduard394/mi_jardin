@@ -62,7 +62,7 @@ class LoncheraController extends Controller
                 // $data['deuda'] = $deuda[0]->deuda + $valor[0]->valor_lonchera;
                 $data['deuda'] = $deuda[0]->deuda + $data[ 'valor' ];
                 
-                return $this->alumno->editarDeuda( $data );
+                return $this->alumno->editarDeuda( $data, $data['id'] );
 
             }
         } else
