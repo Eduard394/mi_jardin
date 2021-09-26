@@ -56,6 +56,7 @@
                 <div class="box-body col-md-12">
                     <div class="row">
                         <form id="crearAlumno">
+                        <button type="submit" onclick="window.print();return false;" class="btn bg-green" style="margin-bottom: 2%;">Imprimir</button>
                             <div class="col-md-12">
                                 <table class="default" id="customers">
                                 <tr>
