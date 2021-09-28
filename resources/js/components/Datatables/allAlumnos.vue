@@ -49,7 +49,6 @@
                         <td>{{alumno.grado}}</td>
                         <td>{{alumno.acudiente}}</td>
                         <td>{{alumno.telefono}}</td>
-                        <td>{{alumno.deuda}}</td>
                         <td><a class="btn btn-success btn-sm text-white" :href="'/alumno/' +  alumno.id" :value="+alumno.id">Ver</a></td>
                         <td><a class="btn btn-danger btn-sm text-white eliminar" @click="guardar(alumno.id)" :value="+alumno.id">Eliminar</a></td>
                         
@@ -115,7 +114,6 @@
                 {label: 'Grado', name: 'grado' },
                 {label: 'Acudiente', name: 'acudiente'},
                 {label: 'Teléfono', name: 'telefono'},
-                {label: 'Deuda', name: 'deuda'},
 
             ];
             columns.forEach((column) => {
