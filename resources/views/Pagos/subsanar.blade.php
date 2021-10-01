@@ -124,11 +124,12 @@
                     
                     if( resp.status == 200 ){
 
-                        $( '#esperaguardar' ).removeClass( 'spinner-border spinner-border-sm mr-2' );
-                        $( '#guardar' ).css( 'pointer-events', '' );
+                        
 
                         if ( resp.data.error ) {
                             toastr.error( resp.data.error );
+                            $( '#esperaguardar' ).removeClass( 'spinner-border spinner-border-sm mr-2' );
+                            $( '#guardar' ).css( 'pointer-events', '' );
                         } else {
                             toastr.success( 'Se ha subsanado correctamente' );
                             location.reload();

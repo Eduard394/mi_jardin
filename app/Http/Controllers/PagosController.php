@@ -7,6 +7,7 @@ use App\Models\Pagos;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\MesCobrado;
+use App\Models\Subsanacion;
 
 class PagosController extends Controller
 {
@@ -17,9 +18,10 @@ class PagosController extends Controller
 
     public function __construct(Pagos $pagos)
     {
-        $this->pagos     = new Pagos();
-        $this->mesCobrado  = new MesCobrado();
+        $this->pagos        = new Pagos();
+        $this->mesCobrado   = new MesCobrado();
         $this->alumno       = new Alumnos();
+        $this->subsanacion  = new Subsanacion();
         //$this->middleware('auth');
     }
     
@@ -264,7 +266,10 @@ class PagosController extends Controller
                     break;
             }
 
+
             $deuda[0]->deuda = $deuda[0]->deuda + $data[ 'valor' ];
+
+            $this->subsanacion->crear( $data );
             return $this->alumno->subsanarDeuda( $deuda, $data[ 'alumno_id' ] );
             
         } else {
@@ -282,12 +287,16 @@ class PagosController extends Controller
 
                     $deuda[0]->deuda_pension = $deuda[0]->deuda_pension - $data[ 'valor' ];
                     $deuda[0]->deuda = $deuda[0]->deuda - $data[ 'valor' ];
+                    
+                    $this->subsanacion->crear( $data );
                     return $this->alumno->subsanarDeuda( $deuda, $data[ 'alumno_id' ] );
 
                 } else if ( $data[ 'tipo_subsanacion' ] == 2 ) {
 
                     $deuda[0]->deuda_pension = $deuda[0]->deuda_pension + $data[ 'valor' ];
                     $deuda[0]->deuda = $deuda[0]->deuda + $data[ 'valor' ];
+                    
+                    $this->subsanacion->crear( $data );
                     return $this->alumno->subsanarDeuda( $deuda, $data[ 'alumno_id' ] );
 
                 }
@@ -303,12 +312,16 @@ class PagosController extends Controller
 
                     $deuda[0]->deuda_lonchera = $deuda[0]->deuda_lonchera - $data[ 'valor' ];
                     $deuda[0]->deuda = $deuda[0]->deuda - $data[ 'valor' ];
+                    
+                    $this->subsanacion->crear( $data );
                     return $this->alumno->subsanarDeuda( $deuda, $data[ 'alumno_id' ] );
 
                 } else if ( $data[ 'tipo_subsanacion' ] == 2 ) {
 
                     $deuda[0]->deuda_lonchera = $deuda[0]->deuda_lonchera + $data[ 'valor' ];
                     $deuda[0]->deuda = $deuda[0]->deuda + $data[ 'valor' ];
+                    
+                    $this->subsanacion->crear( $data );
                     return $this->alumno->subsanarDeuda( $deuda, $data[ 'alumno_id' ] );
 
                 }
@@ -324,12 +337,16 @@ class PagosController extends Controller
 
                     $deuda[0]->deuda_matricula = $deuda[0]->deuda_matricula - $data[ 'valor' ];
                     $deuda[0]->deuda = $deuda[0]->deuda - $data[ 'valor' ];
+                    
+                    $this->subsanacion->crear( $data );
                     return $this->alumno->subsanarDeuda( $deuda, $data[ 'alumno_id' ] );
 
                 } else if ( $data[ 'tipo_subsanacion' ] == 2 ) {
 
                     $deuda[0]->deuda_matricula = $deuda[0]->deuda_matricula + $data[ 'valor' ];
                     $deuda[0]->deuda = $deuda[0]->deuda + $data[ 'valor' ];
+                    
+                    $this->subsanacion->crear( $data );
                     return $this->alumno->subsanarDeuda( $deuda, $data[ 'alumno_id' ] );
 
                 }
@@ -345,12 +362,16 @@ class PagosController extends Controller
 
                     $deuda[0]->deuda_materiales = $deuda[0]->deuda_materiales - $data[ 'valor' ];
                     $deuda[0]->deuda = $deuda[0]->deuda - $data[ 'valor' ];
+                    
+                    $this->subsanacion->crear( $data );
                     return $this->alumno->subsanarDeuda( $deuda, $data[ 'alumno_id' ] );
 
                 } else if ( $data[ 'tipo_subsanacion' ] == 2 ) {
 
                     $deuda[0]->deuda_materiales = $deuda[0]->deuda_materiales + $data[ 'valor' ];
                     $deuda[0]->deuda = $deuda[0]->deuda + $data[ 'valor' ];
+                    
+                    $this->subsanacion->crear( $data );
                     return $this->alumno->subsanarDeuda( $deuda, $data[ 'alumno_id' ] );
 
                 }

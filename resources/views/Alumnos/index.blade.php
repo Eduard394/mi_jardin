@@ -342,8 +342,8 @@
                     if( resp.status == 200 ){
                         
                         toastr.success( 'Alumno actualizado exitosamente' );
-                        $( '#esperaguardar' ).removeClass( 'spinner-border spinner-border-sm mr-2' );
-                        $( '#guardar' ).css( 'pointer-events', '' );
+                        // $( '#esperaguardar' ).removeClass( 'spinner-border spinner-border-sm mr-2' );
+                        // $( '#guardar' ).css( 'pointer-events', '' );
                         window.location.href = "/alumno/lista";
 
                     } else
