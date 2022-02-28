@@ -297,7 +297,7 @@ return [
         [
             'text' => 'historial_pagos',
             'url'  => 'pagos/lista',
-            'icon' => 'fas fa-book',
+            'icon' => 'fas fa-history',
         ],
         [
             'text' => 'reportes',
