@@ -295,6 +295,11 @@ return [
             'icon' => 'fas fa-book-dead',
         ],
         [
+            'text' => 'historial_pagos',
+            'url'  => 'pagos/lista',
+            'icon' => 'fas fa-book',
+        ],
+        [
             'text' => 'reportes',
             'url'  => 'reporte',
             'icon' => 'fas fa-chart-pie',

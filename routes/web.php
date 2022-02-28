@@ -41,7 +41,7 @@ Route::get( 'subsanar', [ PagosController::class, 'indexSubsanar' ] );
 Route::post( 'pagos/subsanar', [ PagosController::class, 'subsanar' ] );
 Route::post( 'pagos/validarMes', [ PagosController::class, 'validarMes' ] );
 Route::post( 'pagos/createPago', [ PagosController::class, 'createPago' ] );
-Route::get( 'pagos/getPagos', [ PagosController::class, 'getPagos' ]);
+Route::post( 'pagos/getPagos', [ PagosController::class, 'getPagos' ]);
 Route::post( 'pagos/getUltimoPago', [ PagosController::class, 'getUltimoPago' ]);
 
 Route::get( 'reporte', [ ReporteController::class, 'index' ] );

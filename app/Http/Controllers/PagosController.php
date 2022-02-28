@@ -50,13 +50,22 @@ class PagosController extends Controller
                     ->select( 'a.id', 'a.nombre' )->orderBy( 'a.nombre', 'ASC' )
                     ->where( 'fecha_retiro', '>', $hoy )
                     ->get();
-
+        
     	return view( 'Pagos.subsanar', compact('alumnos') );
 
     }
 
     public function lista(){
-        return view('Pagos.lista');
+
+        $hoy = date("Y-m-d");  
+
+        $alumnos = DB::table( 'alumnos as a' )
+                    ->select( 'a.id', 'a.nombre' )->orderBy( 'a.nombre', 'ASC' )
+                    ->where( 'fecha_retiro', '>', $hoy )
+                    ->get();
+                    
+        return view( 'Pagos.lista', compact('alumnos') );
+
     }
 
     public function validarMes ( Request $request ) {
@@ -396,16 +405,54 @@ class PagosController extends Controller
 
     }
 
-    public function getPagos() {
+    public function getPagos( Request $request ) {
 
-        $pagos = DB::table("pagos as p")
+        $data       = $request->all(); 
+        $alumno_id  = $data[ 'alumno' ];
+
+        if ( $alumno_id != 'NULL'  ){
+
+            $pagos['data'] = DB::table("pagos as p")
                     ->select("a.nombre", "p.*" )
                     ->join( 'alumnos as a', 'p.alumno_id', '=', 'a.id' )
+                    ->whereBetween( 'p.fecha_pago', [ $data[ 'fecha_inicio' ], $data[ 'fecha_fin' ] ] )
+                    ->where( 'a.id', $alumno_id )
+                    ->orderBy('a.nombre', 'asc')
                     ->get();
+
+            $pagos['total'] = DB::table( 'pagos as p' )
+                    ->select(DB::raw('sum(COALESCE(p.pago_pension ,0) + 
+                                        COALESCE(p.pago_lonchera ,0) + 
+                                        COALESCE(p.pago_seguro ,0) + 
+                                        COALESCE(p.pago_materiales ,0) + 
+                                        COALESCE(p.pago_matricula ,0) )') )
+                    ->whereBetween( 'p.fecha_pago', [ $data[ 'fecha_inicio' ], $data[ 'fecha_fin' ] ] )
+                    ->where( 'p.alumno_id', $alumno_id )
+                    ->get();
+
+        } else {
+
+            $pagos['data'] = DB::table("pagos as p")
+                    ->select("a.nombre", "p.*" )
+                    ->join( 'alumnos as a', 'p.alumno_id', '=', 'a.id' )
+                    ->whereBetween( 'p.fecha_pago', [ $data[ 'fecha_inicio' ], $data[ 'fecha_fin' ] ] )
+                    ->orderBy('a.nombre', 'asc')
+                    ->get();
+
+            $pagos['total'] = DB::table( 'pagos as p' )
+                    ->select(DB::raw('sum(COALESCE(p.pago_pension ,0) + 
+                                        COALESCE(p.pago_lonchera ,0) + 
+                                        COALESCE(p.pago_seguro ,0) + 
+                                        COALESCE(p.pago_materiales ,0) + 
+                                        COALESCE(p.pago_matricula ,0) )') )
+                    ->whereBetween( 'p.fecha_pago', [ $data[ 'fecha_inicio' ], $data[ 'fecha_fin' ] ] )
+                    ->get();
+
+        }
 
         return $pagos;
 
-        // return Pagos::all();
+        //return Pagos::all();
 
     }
 

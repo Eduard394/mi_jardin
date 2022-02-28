@@ -1,98 +1,98 @@
 <template>
-<div class="col-md-12">
-   <div class="box box-secondary">
-      <div class="box-header with-border">
-        <h3 class="box-title">Lista de pagos</h3>
-        <div class="box-tools pull-right">
-          <button type="button" class="btn btn-box-tool"><i class="fa fa-institution text-orange"></i></button>
-        </div>
-      </div>
-      <div class="box-body">
-            <div class="users-style">
-            <div class="table-style">
-                <div class="input-group mb-3">
-                  <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default " placeholder="Ingresa la palabra a buscar"  v-model="search" @input="resetPagination()" >
-                  <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button" id="button-addon2">Buscar</button>
-                  </div>
-                </div>
-                <div class="input-group mb-3">
-                  <div class="input-group-prepend ">
-                    <label class="input-group-text" for="inputGroupSelect01">Registros</label>
-                  </div>
-                  <select class="custom-select" id="inputGroupSelect01" v-model="length" @change="resetPagination()">
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="30">30</option>
-                  </select>
+    <div class="col-md-12">
+        <div class="box box-secondary">
+            <div class="box-header with-border">
+                <h3 class="box-title">Lista de pagos</h3>
+                <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool"><i class="fa fa-institution text-orange"></i></button>
                 </div>
             </div>
-            <v-app style="height:10px" v-show="progreso">
-                <v-progress-linear indeterminate color="orange darken-2"></v-progress-linear>
-            </v-app> 
-            <table class="table table-bordered table-striped table-responsive">
-                <thead class="text-white bg-dark">
-                    <tr>
-                        <th v-for="column in columns" :key="column.name" @click="sortBy(column.name)"
-                            :class="sortKey === column.name ? (sortOrders[column.name] > 0 ? 'sorting_asc' : 'sorting_desc') : 'sorting'"
-                            style="width: 40%; cursor:pointer;">
-                            {{column.label}}
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="pagos in paginatedUsers" :key="pagos.id">
-                        <td style="display: none" id="id">{{pagos.id}}</td>
-                        <td>{{pagos.nombre}}</td>
-                        <td>{{pagos.mes_id}}</td>
-                        <td>{{pagos.fecha_pago}}</td>
-                        <td>{{pagos.pago_pension}}</td>
-                        <td>{{pagos.pago_lonchera}}</td>
-                        <td>{{pagos.pago_matricula}}</td>
-                        <td>{{pagos.pago_seguro}}</td>
-                        <td>{{pagos.pago_materiales}}</td>
-                    </tr>
-                </tbody>
-            </table>
-            <div>
-                <nav class="pagination" v-if="!tableShow.showdata">
-                    <span class="page-stats">{{pagination.from}} - {{pagination.to}} de {{pagination.total}}</span>
-                    <a v-if="pagination.prevPageUrl" class="btn btn-sm btn-primary pagination-previous" @click="--pagination.currentPage">
-                        Prev
-                    </a>
-                    <a class="btn btn-sm btn-dark pagination-previous" v-else disabled>
-                    Prev
-                    </a>
-                    <a v-if="pagination.nextPageUrl" class="btn btn-sm pagination-next" @click="++pagination.currentPage">
-                        Next
-                    </a>
-                    <a class="btn btn-sm btn-dark pagination-next" v-else disabled>
-                        Next
-                    </a>
-                </nav>
-                <nav class="pagination" v-else>
-                    <span class="page-stats">
-                        {{pagination.from}} - {{pagination.to}} de {{filteredUsers.length}}
-                        <span v-if="`filteredUsers.length < pagination.total`"></span>
-                    </span>
-                    <a v-if="pagination.prevPage" class="btn btn-sm btn-dark pagination-previous ml-3" @click="--pagination.currentPage">
-                        Atras
-                    </a>
-                    <a class="btn btn-sm pagination-previous btn-dark ml-3" v-else disabled>
-                    Atras
-                    </a>
-                    <a v-if="pagination.nextPage" class="btn btn-sm btn-dark pagination-next ml-3" @click="++pagination.currentPage">
-                        Siguiente
-                    </a>
-                    <a class="btn btn-sm pagination-next btn-dark ml-3"  v-else disabled>
-                        Siguiente
-                    </a>
-                </nav>
-            </div>
+            <div class="box-body">
+                <div class="users-style">
+                    <div class="table-style">
+                        <div class="input-group mb-3">
+                        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default " placeholder="Ingresa la palabra a buscar"  v-model="search" @input="resetPagination()" >
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" id="button-addon2">Buscar</button>
+                        </div>
+                        </div>
+                        <div class="input-group mb-3">
+                        <div class="input-group-prepend ">
+                            <label class="input-group-text" for="inputGroupSelect01">Registros</label>
+                        </div>
+                        <select class="custom-select" id="inputGroupSelect01" v-model="length" @change="resetPagination()">
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="30">30</option>
+                        </select>
+                        </div>
+                    </div>
+                    <v-app style="height:10px" v-show="progreso">
+                        <v-progress-linear indeterminate color="orange darken-2"></v-progress-linear>
+                    </v-app> 
+                    <table class="table table-bordered table-striped table-responsive">
+                        <thead class="text-white bg-dark">
+                            <tr>
+                                <th v-for="column in columns" :key="column.name" @click="sortBy(column.name)"
+                                    :class="sortKey === column.name ? (sortOrders[column.name] > 0 ? 'sorting_asc' : 'sorting_desc') : 'sorting'"
+                                    style="width: 40%; cursor:pointer;">
+                                    {{column.label}}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="pagos in paginatedUsers" :key="pagos.id">
+                                <td style="display: none" id="id">{{pagos.id}}</td>
+                                <td>{{pagos.nombre}}</td>
+                                <td>{{pagos.mes_id}}</td>
+                                <td>{{pagos.fecha_pago}}</td>
+                                <td>{{pagos.pago_pension}}</td>
+                                <td>{{pagos.pago_lonchera}}</td>
+                                <td>{{pagos.pago_matricula}}</td>
+                                <td>{{pagos.pago_seguro}}</td>
+                                <td>{{pagos.pago_materiales}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div>
+                        <nav class="pagination" v-if="!tableShow.showdata">
+                            <span class="page-stats">{{pagination.from}} - {{pagination.to}} de {{pagination.total}}</span>
+                            <a v-if="pagination.prevPageUrl" class="btn btn-sm btn-primary pagination-previous" @click="--pagination.currentPage">
+                                Prev
+                            </a>
+                            <a class="btn btn-sm btn-dark pagination-previous" v-else disabled>
+                            Prev
+                            </a>
+                            <a v-if="pagination.nextPageUrl" class="btn btn-sm pagination-next" @click="++pagination.currentPage">
+                                Next
+                            </a>
+                            <a class="btn btn-sm btn-dark pagination-next" v-else disabled>
+                                Next
+                            </a>
+                        </nav>
+                        <nav class="pagination" v-else>
+                            <span class="page-stats">
+                                {{pagination.from}} - {{pagination.to}} de {{filteredUsers.length}}
+                                <span v-if="`filteredUsers.length < pagination.total`"></span>
+                            </span>
+                            <a v-if="pagination.prevPage" class="btn btn-sm btn-dark pagination-previous ml-3" @click="--pagination.currentPage">
+                                Atras
+                            </a>
+                            <a class="btn btn-sm pagination-previous btn-dark ml-3" v-else disabled>
+                            Atras
+                            </a>
+                            <a v-if="pagination.nextPage" class="btn btn-sm btn-dark pagination-next ml-3" @click="++pagination.currentPage">
+                                Siguiente
+                            </a>
+                            <a class="btn btn-sm pagination-next btn-dark ml-3"  v-else disabled>
+                                Siguiente
+                            </a>
+                        </nav>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 </template>
 
 <script>

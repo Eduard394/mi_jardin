@@ -23,5 +23,6 @@ return [
     'reportes'                      => 'Reportes',
     'lista_alumnos'                 => 'Listado de alumnos',
     'subsanar'                      => 'Subsanar pago',
-    'cuentas_cobro'                 => 'Cuentas por cobrar'
+    'cuentas_cobro'                 => 'Cuentas por cobrar',
+    'historial_pagos'               => 'Historial de pagos'
 ];
