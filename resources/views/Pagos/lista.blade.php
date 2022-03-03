@@ -81,9 +81,10 @@
                         </form>
                     </div>
                 </div>
-                <div style="clear:both; margin-top:2%;"></div>
+                <div id="div_tabla" style="display: none; clear:both; margin-top:2%;">
                     <label>Total recaudado para <span id="nombre_al"></span>: $<span id="total"></span></label>
                     <div id="tabla" class="table table-condensed display">
+                    </div>
                 </div>
             </div>
         </div>
@@ -103,6 +104,8 @@
     });
 
     function getPagos() {
+
+        $( '#div_tabla' ).hide();
 
         const myObject = new Vue({
 
@@ -140,27 +143,33 @@
 
     function crearTabla( data ){
 
-        var html = $( '#tabla' ).html();
-  		html = " ";
-        $( '#nombre_al' ).text( $( '#alumnos option:selected' ).text() )
-        $( '#total' ).text( commaSeparateNumber( data.total[0].sum ) )
+        if ( data.total[0].sum ) {
 
-  		html    += '<table class="default" id="customers">'
-  				+		'<tr>'
-                +			'<th scope="col">Alumno</th>'
-                +			'<th scope="col">Mes</th>'
-                +			'<th scope="col">Pensión</th>'
-  				+			'<th scope="col">Lonchera</th>'
-                +			'<th scope="col">Matrícula</th>'
-                +			'<th scope="col">Materiales</th>'
-  				+			'<th scope="col">Seguro</th>'
-  				+		'</tr>';
-  	
-        $.each( data.data, function( index, value ) {
-            html 	+=	'<tr><td>'+value.nombre+'</td><td>'+value.mes_id+'</td><td>'+value.pago_pension+'</td><td>'+value.pago_lonchera+'</td><td>'+value.pago_matricula+'</td><td>'+value.pago_materiales+'</td><td>'+value.pago_seguro+'</td></tr>'
-        });
+            $( '#div_tabla' ).show();
+            var html = $( '#tabla' ).html();
+            html     = " ";
+            $( '#nombre_al' ).text( $( '#alumnos option:selected' ).text() )
+            $( '#total' ).text( commaSeparateNumber( data.total[0].sum ) )
 
-        $( '#tabla' ).html( html );
+            html    += '<table class="default" id="customers">'
+                    +		'<tr>'
+                    +			'<th scope="col">Alumno</th>'
+                    +			'<th scope="col">Mes</th>'
+                    +			'<th scope="col">Pensión</th>'
+                    +			'<th scope="col">Lonchera</th>'
+                    +			'<th scope="col">Matrícula</th>'
+                    +			'<th scope="col">Materiales</th>'
+                    +			'<th scope="col">Seguro</th>'
+                    +		'</tr>';
+        
+            $.each( data.data, function( index, value ) {
+                html 	+=	'<tr><td>'+value.nombre+'</td><td>'+value.mes_id+'</td><td>'+value.pago_pension+'</td><td>'+value.pago_lonchera+'</td><td>'+value.pago_matricula+'</td><td>'+value.pago_materiales+'</td><td>'+value.pago_seguro+'</td></tr>'
+            });
+
+            $( '#tabla' ).html( html );
+
+        } else
+            toastr.error( 'No hay datos para estas fechas' );
     }
 
     function commaSeparateNumber(val){
